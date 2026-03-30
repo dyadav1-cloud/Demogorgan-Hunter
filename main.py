@@ -1,5 +1,6 @@
 import pygame
 
+print("Welcome to Demogorgan Hunter!")
 
 pygame.init()
 
