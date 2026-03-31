@@ -61,13 +61,11 @@ class Game():
         pygame.display.set_caption(GAME_TITTLE)
         self.running = True
         self.clock = pygame.time.Clock()
-        self.score = 0
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
         self.all_sprites.add(self.player)
 
-        self.box_x = 200
-        self.box_y = 100
+        
 
     def _handle_events(self):
         for event in pygame.event.get():
@@ -80,10 +78,6 @@ class Game():
     def _draw(self):
         self.screen.fill(BLACK)
 
-        box_screen_x = self.box_x - self.player.world_x + WINDOW_WIDTH // 2
-        box_screen_y = self.box_y - self.player.world_y + WINDOW_HEIGHT // 2
-
-        pygame.draw.rect(self.screen, RED, (box_screen_x, box_screen_y, 50, 50))
 
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
