@@ -12,6 +12,17 @@ WINDOW_HEIGHT = 720
 
 
 #Colors
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+BLACK = (0, 0, 0)
+
+#Sprite clasess
+class Player(pygame.sprite.Sprite):
+    super().__init__()
+
+class Demogorgan(pygame.sprite.Sprite):
+    super().__init__()
 
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
