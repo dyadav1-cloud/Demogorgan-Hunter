@@ -99,6 +99,7 @@ class Game():
 
     def _update(self, delta):
         self.player.update(delta)
+        self.bullets.update(delta)
 
     def _draw_grid(self):
         grid_size = 100
@@ -154,6 +155,7 @@ class Game():
         self._draw_grid()
         self.all_sprites.draw(self.screen)
         self._draw_gun()
+        self.bullets.draw(self.screen)
         pygame.display.flip()
 
     def run(self):
