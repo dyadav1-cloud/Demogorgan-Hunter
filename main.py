@@ -148,7 +148,7 @@ class Game():
         bullet_y = center_y + math.sin(angle) * gun_distance
 
         bullet = Bullet(bullet_x, bullet_y, angle)
-        self.bullets.add(bullet)    
+        self.bullets.add(bullet)
 
     def _draw(self):
         self.screen.fill(BLACK)
