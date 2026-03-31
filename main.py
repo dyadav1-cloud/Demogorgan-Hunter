@@ -29,8 +29,11 @@ PLAYER_SPEED = 400
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((PLAYER_WIDTH, PLAYER_HEIGHT))
-        self.image.fill(PLAYER_COLOR)
+        self.original_image = pygame.image.load("player_transparant.png").convert_alpha()
+        self.original_image = pygame.transform.scale(self.original_image, (90, 120))
+
+        
+        self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
@@ -51,6 +54,16 @@ class Player(pygame.sprite.Sprite):
             self.world_x += self.speed * delta
 
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+        center_x = WINDOW_WIDTH // 2
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        dx = mouse_x - center_x
+        facing_left = dx < 0
+        
+        if facing_left:
+            self.image = pygame.transform.flip(self.original_image, True, False)
+        else:
+            self.image = self.original_image
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, angle):
@@ -84,9 +97,8 @@ class Game():
 
         self.bullets = pygame.sprite.Group()
 
-        self.gun_image = pygame.Surface((50, 12), pygame.SRCALPHA)
-        self.gun_image.fill(WHITE)
-
+        self.gun_image = pygame.image.load("gun.png").convert_alpha()
+        self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
 
     def _handle_events(self):
@@ -114,8 +126,8 @@ class Game():
             pygame.draw.line(self.screen, DARK_BLUE, (0, y), (WINDOW_WIDTH, y))
 
     def _draw_gun(self):
-        center_x = WINDOW_WIDTH // 2 
-        center_y = WINDOW_HEIGHT //2
+        center_x = WINDOW_WIDTH // 2
+        center_y = WINDOW_HEIGHT // 2
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         dx = mouse_x - center_x
@@ -123,15 +135,24 @@ class Game():
 
         angle = math.atan2(dy, dx)
 
-        gun_distance = 40
-        gun_x = center_x + math.cos(angle) * gun_distance  
-        gun_y = center_y + math.sin(angle) * gun_distance 
-
         angle_degrees = -math.degrees(angle)
 
-        rotated_gun = pygame.transform.rotate(self.gun_image, angle_degrees)
-        gun_rect = rotated_gun.get_rect(center=(gun_x, gun_y))
+        facing_right = dx > 0
 
+        gun_to_draw = self.gun_image
+
+        if facing_right:
+            gun_to_draw = pygame.transform.flip(self.gun_image, True, False)
+        else:
+            angle_degrees = -math.degrees(angle) + 180
+
+        rotated_gun = pygame.transform.rotate(gun_to_draw, angle_degrees)
+
+        gun_distance = 28
+        gun_x = center_x + math.cos(angle) * gun_distance
+        gun_y = center_y + math.sin(angle) * gun_distance
+
+        gun_rect = rotated_gun.get_rect(center=(gun_x, gun_y))
         self.screen.blit(rotated_gun, gun_rect)
 
     def _shoot(self):
