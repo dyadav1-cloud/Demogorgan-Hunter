@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((10, 20))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
+        self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
    
 
 #class Demogorgan(pygame.sprite.Sprite):
