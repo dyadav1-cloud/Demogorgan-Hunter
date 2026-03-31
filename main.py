@@ -7,8 +7,8 @@ pygame.init()
 
 #Screen Dimension
 GAME_TITTLE = "Demogorgan Hunter!"
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+WINDOW_WIDTH = 1920
+WINDOW_HEIGHT = 1080
 MAX_FPS = 60
 
 
@@ -22,7 +22,7 @@ DARK_BLUE = (0, 51, 102)
 #Player constants
 PLAYER_COLOR = YELLOW
 PLAYER_HEIGHT, PLAYER_WIDTH = 40, 60
-PLAYER_SPEED = 300
+PLAYER_SPEED = 400
 
 
 #Sprite clasess
