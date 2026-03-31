@@ -95,7 +95,7 @@ class Game():
         dx = mouse_x - center_x
         dy = mouse_y - center_y
 
-        angle = math.atan2(dy/dx)
+        angle = math.atan2(dy, dx)
 
         gun_distance = 40
         gun_x = center_x + math.cos(angle) * gun_distance  
