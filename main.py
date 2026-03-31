@@ -1,12 +1,12 @@
-import pygame
+import pygame, os
 
-print("Welcome to Demogorgan Hunter!")
+
 
 pygame.init()
 
 
 #Screen Dimension
-
+GAME_TITTLE = "Demogorgan Hunter!"
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -32,20 +32,24 @@ class Player(pygame.sprite.Sprite):
 #class Demogorgan(pygame.sprite.Sprite):
     #super().__init__()
 
+class Game():
+    def __init__(self):
 
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Demogorgan Hunter')
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        pygame.display.set_caption(GAME_TITTLE)
+        self.running = True
+        self.playing = True
+        self.score = 0
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-
-    screen.fill((DARK_BLUE)) 
-    pygame.display.flip()
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
 
+            screen.fill((DARK_BLUE)) 
+            pygame.display.flip()
 
-pygame.quit()
+
+
+        pygame.quit()
