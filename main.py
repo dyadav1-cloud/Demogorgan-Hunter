@@ -62,11 +62,10 @@ class Game():
         self.running = True
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
-        
+
         self.player = Player()
         self.all_sprites.add(self.player)
 
-        
 
     def _handle_events(self):
         for event in pygame.event.get():
@@ -88,6 +87,10 @@ class Game():
         for y in range(int(start_y), WINDOW_HEIGHT, grid_size):
             pygame.draw.line(self.screen, DARK_BLUE, (0, y), (WINDOW_WIDTH, y))
 
+    def _draw_gun(self):
+        center_x = WINDOW_WIDTH // 2 
+        center_y = WINDOW_HEIGHT //2
+        mouse_x = pygame.mouse.get_pos()
     def _draw(self):
         self.screen.fill(BLACK)
         self._draw_grid()
