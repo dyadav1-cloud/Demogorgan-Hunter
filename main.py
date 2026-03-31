@@ -62,6 +62,7 @@ class Game():
         self.running = True
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
+        
         self.player = Player()
         self.all_sprites.add(self.player)
 
@@ -89,9 +90,7 @@ class Game():
 
     def _draw(self):
         self.screen.fill(BLACK)
-
         self._draw_grid()
-
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
 
