@@ -55,7 +55,7 @@ class Player(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, angle):
         super().__init__()
-        self.image = pygame.Surface((12, 6), pygame.SRCALPHA)
+        self.image = pygame.Surface((6, 6), pygame.SRCALPHA)
         self.image.fill(RED)
         self.rect = self.image.get_rect(center=(x, y))
         self.world_x = x
