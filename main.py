@@ -21,7 +21,7 @@ DARK_BLUE = (0, 51, 102)
 
 #Player constants
 PLAYER_COLOR = YELLOW
-PLAYER_HEIGHT, PLAYER_WIDTH = 40, 60
+PLAYER_HEIGHT, PLAYER_WIDTH = 60, 40
 PLAYER_SPEED = 400
 
 
@@ -65,6 +65,10 @@ class Game():
 
         self.player = Player()
         self.all_sprites.add(self.player)
+
+        self.gun_image = pygame.Surface((50, 12), pygame.SRCALPHA)
+        self.gun_image.fill(WHITE)
+
 
 
     def _handle_events(self):
