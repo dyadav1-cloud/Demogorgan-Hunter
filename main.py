@@ -82,6 +82,9 @@ class Game():
         self.player = Player()
         self.all_sprites.add(self.player)
 
+        self.bullet = Bullet()
+        self.all_sprites.add(self.bullet)
+
         self.gun_image = pygame.Surface((50, 12), pygame.SRCALPHA)
         self.gun_image.fill(WHITE)
 
