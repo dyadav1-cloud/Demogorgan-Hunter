@@ -78,13 +78,13 @@ class Game():
     def _draw_grid(self):
         grid_size = 100
 
-        #start_x = - (self.player.world_x % grid_size)
-        #start_y = - (self.player.world_y % grid_size)
+        start_x = - (self.player.world_x % grid_size)
+        start_y = - (self.player.world_y % grid_size)
 
-        for x in range(0, WINDOW_WIDTH, grid_size):
+        for x in range(int(start_x), WINDOW_WIDTH, grid_size):
             pygame.draw.line(self.screen, DARK_BLUE, (x, 0), (x, WINDOW_HEIGHT))
 
-        for y in range(0, WINDOW_HEIGHT, grid_size):
+        for y in range(int(start_y), WINDOW_HEIGHT, grid_size):
             pygame.draw.line(self.screen, DARK_BLUE, (0, y), (WINDOW_WIDTH, y))
 
     def _draw(self):
