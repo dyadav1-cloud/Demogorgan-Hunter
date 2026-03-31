@@ -22,10 +22,15 @@ DARK_BLUE = (0, 51, 102)
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.image = pygame.Surface((10, 20))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+
+        
     
 
-class Demogorgan(pygame.sprite.Sprite):
-    super().__init__()
+#class Demogorgan(pygame.sprite.Sprite):
+    #super().__init__()
 
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -41,6 +46,6 @@ while running:
     screen.fill((DARK_BLUE)) 
     pygame.display.flip()
 
-    
+
 
 pygame.quit()
