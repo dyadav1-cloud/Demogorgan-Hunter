@@ -7,11 +7,12 @@ pygame.init()
 
 #Screen Dimension
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
 
-#Game Screen
+#Colors
+
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Demogorgan Hunter')
