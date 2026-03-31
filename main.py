@@ -1,4 +1,4 @@
-import pygame, os, math
+import pygame, os, math, random
 
 
 
@@ -18,25 +18,38 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 DARK_BLUE = (0, 51, 102)
+GREEN = (0, 255, 0)
 
 #Player constants
 PLAYER_COLOR = YELLOW
-PLAYER_HEIGHT, PLAYER_WIDTH = 60, 40
+PLAYER_WIDTH, PLAYER_HEIGHT = 90, 120
 PLAYER_SPEED = 400
+PLAYER_HEALTH = 100
+PLAYER_MAX_HEALTH = 100
 
+#Enemy constants 
+ENEMY_SPEED = 300
+ENEMY_WIDTH, ENEMY_HEIGHT = 90, 120
+ENEMY_HEALTH = 100
+ENEMY_MAX_HEALTH = 100
+
+#Bullet traits
+DAMAGE = 34
 
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.original_image = pygame.image.load("player_transparant.png").convert_alpha()
-        self.original_image = pygame.transform.scale(self.original_image, (90, 120))
+        self.original_image = pygame.transform.scale(self.original_image, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
         
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
+        self.health = PLAYER_HEALTH
+        self.max_health= PLAYER_MAX_HEALTH
         self.world_x = 0
         self.world_y = 0
         self.speed = PLAYER_SPEED
@@ -66,13 +79,14 @@ class Player(pygame.sprite.Sprite):
             self.image = self.original_image
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle):
+    def __init__(self, world_x, world_y, angle):
         super().__init__()
         self.image = pygame.Surface((6, 6), pygame.SRCALPHA)
         self.image.fill(RED)
-        self.rect = self.image.get_rect(center=(x, y))
-        self.world_x = x
-        self.world_y = y
+        self.rect = self.image.get_rect(center=(world_x, world_y))
+        self.damage = DAMAGE
+        self.world_x = world_x
+        self.world_y = world_y
         self.angle = angle
         self.speed = 800
 
@@ -81,8 +95,62 @@ class Bullet(pygame.sprite.Sprite):
         self.world_y += math.sin(self.angle) * self.speed * delta
         self.rect.center = (self.world_x, self.world_y)
 
-#class Demogorgan(pygame.sprite.Sprite):
-    #super().__init__()
+    def draw(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        self.rect.center = (screen_x, screen_y)
+        screen.blit(self.image, self.rect)
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load("enemy.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (ENEMY_WIDTH, ENEMY_HEIGHT))
+
+        self.rect = self.image.get_rect()
+
+        self.health = ENEMY_HEALTH
+        self.max_health = ENEMY_MAX_HEALTH
+        self.world_x = x
+        self.world_y = y
+        self.speed = ENEMY_SPEED
+
+    def update(self, delta, player_world_x, player_world_y):
+        dx = player_world_x - self.world_x
+        dy = player_world_y - self.world_y
+
+        distance = math.sqrt(dx * dx + dy * dy)
+        
+        if distance != 0:
+            dx /= distance
+            dy /= distance
+
+        self.world_x += dx * self.speed * delta
+        self.world_y += dy * self.speed * delta
+
+    def draw_health_bar(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        bar_width = 50
+        bar_height = 6
+        health_ratio = self.health / self.max_health
+
+        bar_x = screen_x - bar_width // 2
+        bar_y = screen_y - ENEMY_HEIGHT // 2 - 12
+
+        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
+        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+
+    def draw(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        self.rect.center = (screen_x, screen_y)
+        screen.blit(self.image, self.rect)
+
+
 
 class Game():
     def __init__(self):
@@ -90,10 +158,16 @@ class Game():
         pygame.display.set_caption(GAME_TITTLE)
         self.running = True
         self.clock = pygame.time.Clock()
+        self.score = 0
+        self.font = pygame.font.SysFont(None, 48)
         self.all_sprites = pygame.sprite.Group()
 
         self.player = Player()
         self.all_sprites.add(self.player)
+
+        self.enemies = pygame.sprite.Group()
+        self.enemy_spawn_timer = 0
+        self.enemy_spawn_delay = 1.0 #later on I will decrease this with stage or wave to make it harder. I will also introduce different types of enemies 
 
         self.bullets = pygame.sprite.Group()
 
@@ -112,6 +186,63 @@ class Game():
     def _update(self, delta):
         self.player.update(delta)
         self.bullets.update(delta)
+
+        for enemy in self.enemies:
+            enemy.update(delta, self.player.world_x, self.player.world_y)
+
+        self.enemy_spawn_timer += delta
+        if self.enemy_spawn_timer >= self.enemy_spawn_delay:
+            self._spawn_enemy()
+            self.enemy_spawn_timer = 0
+
+        for bullet in self.bullets.copy():
+            for enemy in self.enemies.copy():
+                dx = bullet.world_x - enemy.world_x
+                dy = bullet.world_y - enemy.world_y
+                distance = math.sqrt(dx * dx + dy * dy)
+
+                if distance < 50:
+                    enemy.health -= bullet.damage
+                    bullet.kill()
+
+                    if enemy.health <= 0:
+                        enemy.kill()
+                        self.score += 1
+                    break
+
+        for enemy in self.enemies.copy():
+            dx = enemy.world_x - self.player.world_x
+            dy = enemy.world_y - self.player.world_y
+            distance = math.sqrt(dx * dx + dy * dy)
+
+            if distance < 60:
+                self.player.health -= 20
+                enemy.kill()
+
+                if self.player.health <= 0:
+                    self.running = False
+    
+    def _draw_player_health(self):
+        bar_width = 300
+        bar_height = 20
+
+        health_ratio = self.player.health / self.player.max_health
+
+        bar_x = WINDOW_WIDTH - bar_width - 20
+        bar_y = 20
+
+        pygame.draw.rect(self.screen, RED, (bar_x, bar_y, bar_width, bar_height))
+        pygame.draw.rect(
+            self.screen,
+            GREEN,
+            (bar_x, bar_y, int(bar_width * health_ratio), bar_height)
+        )
+        pygame.draw.rect(self.screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 2)
+
+
+    def _draw_score(self):
+        score_text = self.font.render(f"Score: {self.score}", True, WHITE)
+        self.screen.blit(score_text, (20, 20))
 
     def _draw_grid(self):
         grid_size = 100
@@ -165,18 +296,44 @@ class Game():
         angle = math.atan2(dy, dx)
 
         gun_distance = 40
-        bullet_x = center_x + math.cos(angle) * gun_distance
-        bullet_y = center_y + math.sin(angle) * gun_distance
+        bullet_x = self.player.world_x + math.cos(angle) * gun_distance
+        bullet_y = self.player.world_y + math.sin(angle) * gun_distance
 
         bullet = Bullet(bullet_x, bullet_y, angle)
         self.bullets.add(bullet)
 
+    def _spawn_enemy(self):
+        side = random.choice(["top","bottom","left","right"])
+        margin = 200
+
+        if side == "top":
+            x = random.randint(-WINDOW_WIDTH, WINDOW_WIDTH)
+            y = self.player.world_y - WINDOW_HEIGHT // 2 - margin
+        elif side == "bottom":
+            x = random.randint(-WINDOW_WIDTH, WINDOW_WIDTH)
+            y = self.player.world_y + WINDOW_HEIGHT // 2 + margin
+        elif side == "left":
+            x = self.player.world_x - WINDOW_WIDTH // 2 - margin
+            y = random.randint(-WINDOW_HEIGHT, WINDOW_HEIGHT)
+        else:
+            x = self.player.world_x + WINDOW_WIDTH // 2 + margin
+            y = random.randint(-WINDOW_HEIGHT, WINDOW_HEIGHT)
+
+        enemy = Enemy(x, y)
+        self.enemies.add(enemy)
+
     def _draw(self):
         self.screen.fill(BLACK)
         self._draw_grid()
+        for enemy in self.enemies:
+            enemy.draw(self.screen, self.player.world_x, self.player.world_y)
+            enemy.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
         self.all_sprites.draw(self.screen)
         self._draw_gun()
-        self.bullets.draw(self.screen)
+        for bullet in self.bullets:
+            bullet.draw(self.screen, self.player.world_x, self.player.world_y)
+        self._draw_player_health()
+        self._draw_score()
         pygame.display.flip()
 
     def run(self):
