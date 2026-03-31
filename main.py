@@ -119,6 +119,7 @@ class Game():
             delta = self.clock.tick(MAX_FPS) / 1000.0
             self._handle_events()
             self._update(delta)
+            self._draw_gun()
             self._draw()
         
         pygame.quit()
