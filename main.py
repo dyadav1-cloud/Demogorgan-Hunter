@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
-        
+
 
 
    
@@ -46,6 +46,7 @@ class Game():
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(GAME_TITTLE)
         self.running = True
+        
         self.score = 0
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
@@ -66,6 +67,7 @@ class Game():
         while self.running:
             self._handle_events()
             self._draw()
+        
         pygame.quit()
 
 if __name__ == "__main__":
