@@ -52,6 +52,22 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, angle):
+        super().__init__()
+        self.image = pygame.Surface((12, 6), pygame.SRCALPHA)
+        self.image.fill(RED)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.world_x = x
+        self.world_y = y
+        self.angle = angle
+        self.speed = 800
+
+    def update(self, delta):
+        self.world_x += math.cos(self.angle) * self.speed * delta
+        self.world_y += math.sin(self.angle) * self.speed * delta
+        self.rect.center = (self.world_x, self.world_y)
+
 #class Demogorgan(pygame.sprite.Sprite):
     #super().__init__()
 
