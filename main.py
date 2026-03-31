@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, math
 
 
 
@@ -90,7 +90,24 @@ class Game():
     def _draw_gun(self):
         center_x = WINDOW_WIDTH // 2 
         center_y = WINDOW_HEIGHT //2
-        mouse_x = pygame.mouse.get_pos()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        dx = mouse_x - center_x
+        dy = mouse_y - center_y
+
+        angle = math.atan2(dy/dx)
+
+        gun_distance = 40
+        gun_x = center_x + math.cos(angle) * gun_distance  
+        gun_y = center_y + math.sin(angle) * gun_distance 
+
+        angle_degrees = -math.degrees(angle)
+
+        rotated_gun = pygame.transform.rotate(self.gun_image, angle_degrees)
+        gun_rect = rotated_gun.get_rect(center=(gun_x, gun_y))
+
+        self.screen.blit(rotated_gun, gun_rect)
+
     def _draw(self):
         self.screen.fill(BLACK)
         self._draw_grid()
