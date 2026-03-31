@@ -19,14 +19,23 @@ YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 DARK_BLUE = (0, 51, 102)
 
+#Player constants
+PLAYER_COLOR = 'YELLOW'
+PLAYER_HEIGHT, PLAYER_WIDTH = 40, 60
+
+
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((40, 60))
-        self.image.fill(YELLOW)
+        self.image = pygame.Surface((PLAYER_HEIGHT, PLAYER_WIDTH))
+        self.image.fill(PLAYER_COLOR)
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+
+        
+
+
    
 
 #class Demogorgan(pygame.sprite.Sprite):
@@ -47,7 +56,6 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-
 
     def _draw(self):
         self.screen.fill(BLACK)
