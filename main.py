@@ -23,7 +23,7 @@ DARK_BLUE = (0, 51, 102)
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((10, 20))
+        self.image = pygame.Surface((40, 60))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
