@@ -82,8 +82,7 @@ class Game():
         self.player = Player()
         self.all_sprites.add(self.player)
 
-        self.bullet = Bullet()
-        self.all_sprites.add(self.bullet)
+        self.bullet = pygame.sprite.Group()
 
         self.gun_image = pygame.Surface((50, 12), pygame.SRCALPHA)
         self.gun_image.fill(WHITE)
@@ -94,6 +93,9 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self._shoot()
 
     def _update(self, delta):
         self.player.update(delta)
@@ -130,6 +132,22 @@ class Game():
         gun_rect = rotated_gun.get_rect(center=(gun_x, gun_y))
 
         self.screen.blit(rotated_gun, gun_rect)
+
+    def _shoot(self):
+        center_x = WINDOW_WIDTH // 2
+        center_y = WINDOW_HEIGHT // 2
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        dx = mouse_x - center_x
+        dy = mouse_y - center_y
+        angle = math.atan2(dy, dx)
+
+        gun_distance = 40
+        bullet_x = center_x + math.cos(angle) * gun_distance
+        bullet_y = center_y + math.sin(angle) * gun_distance
+
+        bullet = Bullet(bullet_x, bullet_y, angle)
+        self.bullets.add(bullet)    
 
     def _draw(self):
         self.screen.fill(BLACK)
