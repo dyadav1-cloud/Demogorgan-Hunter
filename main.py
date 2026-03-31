@@ -75,9 +75,22 @@ class Game():
     def _update(self, delta):
         self.player.update(delta)
 
+    def _draw_grid(self):
+        grid_size = 100
+
+        start_x = - (self.player.world_x % grid_size)
+        start_y = - (self.player.world_y % grid_size)
+
+        for x in range(int(start_x), WINDOW_WIDTH, grid_size):
+            pygame.draw.line(self.screen, DARK_BLUE, (x, 0), (x, WINDOW_HEIGHT))
+
+        for y in range(int(start_y), WINDOW_HEIGHT, grid_size):
+            pygame.draw.line(self.screen, DARK_BLUE, (0, y), (WINDOW_WIDTH, y))
+
     def _draw(self):
         self.screen.fill(BLACK)
 
+        self._draw_grid()
 
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
