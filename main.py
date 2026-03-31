@@ -49,9 +49,6 @@ class Game():
                 self.running = False
 
 
-            screen.fill((DARK_BLUE)) 
-            pygame.display.flip()
-
-
-
-        pygame.quit()
+    def _draw(self):
+        self.screen.fill(BLACK)
+        self.all_sprites.draw(self.screen)
