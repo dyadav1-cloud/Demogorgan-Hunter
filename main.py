@@ -52,3 +52,17 @@ class Game():
     def _draw(self):
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
+        pygame.display.flip()
+
+    def run(self):
+        while self.running:
+            self._handle_events()
+            self.clock.tick(MAX_FPS)
+            delta = self.clock.get_time() / 1000.0
+            self._update(delta)
+            self._draw()
+        pygame.quit()
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
