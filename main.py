@@ -26,9 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((10, 20))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
-
-        
-    
+   
 
 #class Demogorgan(pygame.sprite.Sprite):
     #super().__init__()
@@ -58,9 +56,6 @@ class Game():
     def run(self):
         while self.running:
             self._handle_events()
-            self.clock.tick(MAX_FPS)
-            delta = self.clock.get_time() / 1000.0
-            self._update(delta)
             self._draw()
         pygame.quit()
 
