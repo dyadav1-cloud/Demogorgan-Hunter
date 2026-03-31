@@ -19,7 +19,9 @@ BLACK = (0, 0, 0)
 
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
-    super().__init__()
+    def __init__(self):
+        super().__init__()
+    
 
 class Demogorgan(pygame.sprite.Sprite):
     super().__init__()
