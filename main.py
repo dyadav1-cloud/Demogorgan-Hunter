@@ -37,7 +37,6 @@ class Game():
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(GAME_TITTLE)
         self.running = True
-        
         self.score = 0
 
         self.player = Player()
