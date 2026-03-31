@@ -16,6 +16,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
+DARK_BLUE = (0, 51, 102)
 
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
@@ -36,7 +37,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((30, 30, 30)) 
+
+    screen.fill((DARK_BLUE)) 
     pygame.display.flip()
+
+    
 
 pygame.quit()
