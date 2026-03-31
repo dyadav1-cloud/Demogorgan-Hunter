@@ -9,6 +9,7 @@ pygame.init()
 GAME_TITTLE = "Demogorgan Hunter!"
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
+MAX_FPS = 60
 
 
 #Colors
