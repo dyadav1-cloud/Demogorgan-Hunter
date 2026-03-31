@@ -20,7 +20,7 @@ BLACK = (0, 0, 0)
 DARK_BLUE = (0, 51, 102)
 
 #Player constants
-PLAYER_COLOR = 'YELLOW'
+PLAYER_COLOR = YELLOW
 PLAYER_HEIGHT, PLAYER_WIDTH = 40, 60
 PLAYER_SPEED = 300
 
@@ -29,16 +29,16 @@ PLAYER_SPEED = 300
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((PLAYER_HEIGHT, PLAYER_WIDTH))
+        self.image = pygame.Surface((PLAYER_WIDTH, PLAYER_HEIGHT))
         self.image.fill(PLAYER_COLOR)
         self.rect = self.image.get_rect()
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
         self.world_x = 0
         self.world_y = 0
-        self.player_speed = PLAYER_SPEED
+        self.speed = PLAYER_SPEED
 
-    def update(self):
+    def update(self, delta):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
