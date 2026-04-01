@@ -31,6 +31,7 @@ ENEMY_MAX_HEALTH = 100
 
 #Bullet traits
 DAMAGE = 34
+BULLET_SPEED = 800
 
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
@@ -84,7 +85,7 @@ class Bullet(pygame.sprite.Sprite):
         self.world_x = world_x
         self.world_y = world_y
         self.angle = angle
-        self.speed = 800
+        self.speed = BULLET_SPEED
 
     def update(self, delta):
         self.world_x += math.cos(self.angle) * self.speed * delta
@@ -214,6 +215,7 @@ class Game():
             if distance < 60:
                 self.player.health -= 20
                 enemy.kill()
+                
 
                 if self.player.health <= 0:
                     self.running = False
