@@ -216,7 +216,6 @@ class Game():
                 self.player.health -= 20
                 enemy.kill()
                 
-
                 if self.player.health <= 0:
                     self.running = False
     
