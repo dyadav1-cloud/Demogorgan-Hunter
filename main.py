@@ -1,16 +1,12 @@
 import pygame, os, math, random
 
-
-
 pygame.init()
-
 
 #Screen Dimension
 GAME_TITTLE = "Demogorgan Hunter!"
 WINDOW_WIDTH = 1920
 WINDOW_HEIGHT = 1080
 MAX_FPS = 60
-
 
 #Colors
 WHITE = (255, 255, 255)
@@ -82,7 +78,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, world_x, world_y, angle):
         super().__init__()
         self.image = pygame.Surface((6, 6), pygame.SRCALPHA)
-        self.image.fill(RED)
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect(center=(world_x, world_y))
         self.damage = DAMAGE
         self.world_x = world_x
