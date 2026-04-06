@@ -156,6 +156,7 @@ class Game():
         self.state = "menu"
         self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
         self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
+        self.back_button = pygame.Rect(50, 50, 150, 50)
         self.running = True
         self.clock = pygame.time.Clock()
         self.score = 0
