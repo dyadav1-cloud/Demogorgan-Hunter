@@ -244,9 +244,8 @@ class Game():
                     elif self.pause_settings_button.collidepoint(mouse_pos):
                         self.previous_state = "paused"
                         self.state = "settings"
-                    elif self.pause_settings_button.collidepoint(mouse_pos):
-                        self.previous_state = "paused"
-                        self.state = "settings"
+                    elif self.quit_menu_button.collidepoint(mouse_pos):
+                        self.state = "menu"
 
                 elif self.state == "game_over":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -277,7 +276,7 @@ class Game():
         self.res_1280_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 390, 300, 50)
         self.res_800_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 460, 300, 50)
 
-        self.pause_button = pygame.Rect(20, 20, 50, 50)
+        self.pause_button = pygame.Rect(WINDOW_WIDTH // 2 - 25, 20, 50, 50)
 
     def _update(self, delta):
 
