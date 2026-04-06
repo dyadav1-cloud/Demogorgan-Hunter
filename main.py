@@ -322,6 +322,46 @@ class Game():
                 if self.player.health <= 0:
                     self.state = "game_over"
     
+
+    def _draw_pause_button(self):
+        pygame.draw.rect(self.screen, DARK_BLUE, self.pause_button)
+
+        bar_width = 8
+        bar_height = 24
+        gap = 8
+
+        x = self.pause_button.x + 12
+        y = self.pause_button.y + 13
+
+        pygame.draw.rect(self.screen, WHITE, (x, y, bar_width, bar_height))
+        pygame.draw.rect(self.screen, WHITE, (x + bar_width + gap, y, bar_width, bar_height))
+
+    def _draw_paused(self):
+        self._draw_game()
+
+        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        self.screen.blit(overlay, (0, 0))
+
+        title_font = pygame.font.SysFont(None, 90)
+        button_font = pygame.font.SysFont(None, 45)
+
+        title_text = title_font.render("Paused", True, WHITE)
+        title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 220))
+        self.screen.blit(title_text, title_rect)
+
+        pygame.draw.rect(self.screen, DARK_BLUE, self.continue_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.pause_settings_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.quit_menu_button)
+
+        continue_text = button_font.render("Continue", True, WHITE)
+        settings_text = button_font.render("Settings", True, WHITE)
+        quit_text = button_font.render("Main Menu", True, WHITE)
+
+        self.screen.blit(continue_text, continue_text.get_rect(center=self.continue_button.center))
+        self.screen.blit(settings_text, settings_text.get_rect(center=self.pause_settings_button.center))
+        self.screen.blit(quit_text, quit_text.get_rect(center=self.quit_menu_button.center))
+
     def _draw_player_health(self):
         bar_width = 300
         bar_height = 20
@@ -446,36 +486,63 @@ class Game():
         title_font = pygame.font.SysFont(None, 80)
         button_font = pygame.font.SysFont(None, 40)
 
-        text = title_font.render("Settings", True, WHITE)
-        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
-        self.screen.blit(text, text_rect)
+        title_text = title_font.render("Settings", True, WHITE)
+        title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 180))
+        self.screen.blit(title_text, title_rect)
 
+        res_text = button_font.render("Resolution", True, WHITE)
+        res_rect = res_text.get_rect(center=(WINDOW_WIDTH // 2, 260))
+        self.screen.blit(res_text, res_rect)
+
+        pygame.draw.rect(self.screen, DARK_BLUE, self.res_1920_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.res_1280_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.res_800_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.back_button)
+
+        text_1920 = button_font.render("1920 x 1080", True, WHITE)
+        text_1280 = button_font.render("1280 x 720", True, WHITE)
+        text_800 = button_font.render("800 x 600", True, WHITE)
         back_text = button_font.render("Back", True, WHITE)
-        back_rect = back_text.get_rect(center=self.back_button.center)
 
-        self.screen.blit(back_text, back_rect)
+        self.screen.blit(text_1920, text_1920.get_rect(center=self.res_1920_button.center))
+        self.screen.blit(text_1280, text_1280.get_rect(center=self.res_1280_button.center))
+        self.screen.blit(text_800, text_800.get_rect(center=self.res_800_button.center))
+        self.screen.blit(back_text, back_text.get_rect(center=self.back_button.center))
 
     def _draw_game_over(self):
         title_font = pygame.font.SysFont(None, 100)
+        button_font = pygame.font.SysFont(None, 45)
+
         text = title_font.render("Game Over", True, RED)
-        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, 250))
         self.screen.blit(text, text_rect)
+
+        pygame.draw.rect(self.screen, DARK_BLUE, self.play_again_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.game_over_menu_button)
+
+        play_again_text = button_font.render("Play Again", True, WHITE)
+        menu_text = button_font.render("Main Menu", True, WHITE)
+
+        self.screen.blit(play_again_text, play_again_text.get_rect(center=self.play_again_button.center))
+        self.screen.blit(menu_text, menu_text.get_rect(center=self.game_over_menu_button.center))
 
     def _draw(self):
         self.screen.fill(BLACK)
+
         if self.state == "menu":
             self._draw_menu()
+
         elif self.state == "settings":
             self._draw_settings()
 
         elif self.state == "playing":
             self._draw_game()
 
+        elif self.state == "paused":
+            self._draw_paused()
+
         elif self.state == "game_over":
             self._draw_game_over()
-
-        elif self.state == "victory":
-            self._draw_victory()
 
         pygame.display.flip()
 
@@ -494,6 +561,7 @@ class Game():
 
         self._draw_player_health()
         self._draw_score()
+        self._draw_pause_button
 
     def run(self):
         while self.running:
