@@ -212,17 +212,72 @@ class Game():
 
                 if self.state == "menu":
                     if self.play_button.collidepoint(mouse_pos):
+                        self._reset_game()
                         self.state = "playing"
 
                     elif self.settings_button.collidepoint(mouse_pos):
+                        self.previous_state = "menu"
                         self.state = "settings"
-
-                elif self.state == "playing":
-                    self._shoot()
 
                 elif self.state == "settings":
                     if self.back_button.collidepoint(mouse_pos):
+                        self.state = self.previous_state
+
+                    elif self.res_1920_button.collidepoint(mouse_pos):
+                        self._change_resolution(1920, 1080)
+
+                    elif self.res_1280_button.collidepoint(mouse_pos):
+                        self._change_resolution(1280, 720)
+
+                    elif self.res_800_button.collidepoint(mouse_pos):
+                        self._change_resolution(800, 600)
+
+                elif self.state == "playing":
+                    if self.pause_button.collidepoint(mouse_pos):
+                        self.state = "paused"
+                    else:
+                        self._shoot()
+
+                elif self.state == "paused":
+                    if self.continue_button.collidepoint(mouse_pos):
+                        self.state = "playing"
+                    elif self.pause_settings_button.collidepoint(mouse_pos):
+                        self.previous_state = "paused"
+                        self.state = "settings"
+                    elif self.pause_settings_button.collidepoint(mouse_pos):
+                        self.previous_state = "paused"
+                        self.state = "settings"
+
+                elif self.state == "game_over":
+                    if self.play_again_button.collidepoint(mouse_pos):
+                        self._reset_game()
+                        self.state = "playing"
+                    elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.state = "menu"
+
+    def _change_resolution(self, width, height):
+        global WINDOW_WIDTH, WINDOW_HEIGHT
+
+        WINDOW_WIDTH = width
+        WINDOW_HEIGHT = height
+
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+        self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
+        self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
+
+        self.continue_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 350, 200, 60)
+        self.pause_settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
+        self.quit_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
+
+        self.play_again_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
+        self.game_over_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
+
+        self.res_1920_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 320, 300, 50)
+        self.res_1280_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 390, 300, 50)
+        self.res_800_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 460, 300, 50)
+
+        self.pause_button = pygame.Rect(20, 20, 50, 50)
 
     def _update(self, delta):
 
