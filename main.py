@@ -179,8 +179,18 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+
+                if self.state == "menu":
+                    if self.play_button.collidepoint(mouse_pos):
+                        self.state = "playing"
+
+                    elif self.settings_button.collidepoint(mouse_pos):
+                        self.state = "settings"
+
+                elif self.state == "playing":
                     self._shoot()
 
     def _update(self, delta):
