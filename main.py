@@ -342,17 +342,23 @@ class Game():
         elif self.state == "victory":
             self._draw_victory()
 
+        pygame.display.flip()
+
+    def _draw_game(self):
         self._draw_grid()
+
         for enemy in self.enemies:
             enemy.draw(self.screen, self.player.world_x, self.player.world_y)
             enemy.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
+
         self.all_sprites.draw(self.screen)
         self._draw_gun()
+
         for bullet in self.bullets:
             bullet.draw(self.screen, self.player.world_x, self.player.world_y)
+
         self._draw_player_health()
         self._draw_score()
-        pygame.display.flip()
 
     def run(self):
         while self.running:
