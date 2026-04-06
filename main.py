@@ -326,6 +326,44 @@ class Game():
         enemy = Enemy(x, y)
         self.enemies.add(enemy)
 
+    def _draw_menu(self):
+        title_font = pygame.font.SysFont(None, 100)
+        button_font = pygame.font.SysFont(None, 50)
+
+        title_text = title_font.render("Demogorgon Hunter", True, WHITE)
+        title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 200))
+        self.screen.blit(title_text, title_rect)
+
+        pygame.draw.rect(self.screen, DARK_BLUE, self.play_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.settings_button)
+
+        play_text = button_font.render("Play", True, WHITE)
+        settings_text = button_font.render("Settings", True, WHITE)
+
+        play_rect = play_text.get_rect(center=self.play_button.center)
+        settings_rect = settings_text.get_rect(center=self.settings_button.center)
+
+        self.screen.blit(play_text, play_rect)
+        self.screen.blit(settings_text, settings_rect)
+
+    def _draw_settings(self):
+        title_font = pygame.font.SysFont(None, 80)
+        text = title_font.render("Settings", True, WHITE)
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(text, text_rect)
+
+    def _draw_settings(self):
+        title_font = pygame.font.SysFont(None, 80)
+        text = title_font.render("Settings", True, WHITE)
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(text, text_rect)
+
+    def _draw_game_over(self):
+        title_font = pygame.font.SysFont(None, 100)
+        text = title_font.render("Game Over", True, RED)
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(text, text_rect)
+
     def _draw(self):
         self.screen.fill(BLACK)
         if self.state == "menu":
