@@ -184,6 +184,10 @@ class Game():
                     self._shoot()
 
     def _update(self, delta):
+
+        if self.state != "playing":
+            return
+        
         self.player.update(delta)
         self.bullets.update(delta)
 
