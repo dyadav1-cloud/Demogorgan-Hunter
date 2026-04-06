@@ -154,9 +154,22 @@ class Game():
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(GAME_TITTLE)
         self.state = "menu"
+        self.previous_state = "menu"
         self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
         self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
         self.back_button = pygame.Rect(50, 50, 150, 50)
+        self.pause_button = pygame.Rect(20, 20, 50, 50)
+        self.continue_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 350, 200, 60)
+        self.pause_settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
+        self.quit_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
+
+        self.play_again_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
+        self.game_over_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
+
+        self.res_1920_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 320, 300, 50)
+        self.res_1280_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 390, 300, 50)
+        self.res_800_button = pygame.Rect(WINDOW_WIDTH // 2 - 150, 460, 300, 50)
+        
         self.running = True
         self.clock = pygame.time.Clock()
         self.score = 0
@@ -174,6 +187,19 @@ class Game():
 
         self.gun_image = pygame.image.load("gun.png").convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
+
+    def _reset_game(self):
+        self.score = 0
+
+        self.player = Player()
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.player)
+
+        self.enemies = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
+
+        self.enemy_spawn_timer = 0
+        self.enemy_spawn_delay = 1.0
 
 
     def _handle_events(self):
