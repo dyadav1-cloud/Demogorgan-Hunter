@@ -158,7 +158,7 @@ class Game():
         self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
         self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
         self.back_button = pygame.Rect(50, 50, 150, 50)
-        self.pause_button = pygame.Rect(20, 20, 50, 50)
+        self.pause_button = pygame.Rect(WINDOW_WIDTH // 2 - 25, 20, 50, 50)
         self.continue_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 350, 200, 60)
         self.pause_settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
         self.quit_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
@@ -561,7 +561,7 @@ class Game():
 
         self._draw_player_health()
         self._draw_score()
-        self._draw_pause_button
+        self._draw_pause_button()
 
     def run(self):
         while self.running:
