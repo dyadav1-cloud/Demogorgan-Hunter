@@ -153,6 +153,9 @@ class Game():
     def __init__(self):
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(GAME_TITTLE)
+        self.state = "menu"
+        self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
+        self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
         self.running = True
         self.clock = pygame.time.Clock()
         self.score = 0
