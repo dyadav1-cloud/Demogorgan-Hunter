@@ -239,7 +239,7 @@ class Game():
                 enemy.kill()
                 
                 if self.player.health <= 0:
-                    self.running = False
+                    self.state = "game_over"
     
     def _draw_player_health(self):
         bar_width = 300
