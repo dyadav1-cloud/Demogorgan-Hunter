@@ -328,6 +328,20 @@ class Game():
 
     def _draw(self):
         self.screen.fill(BLACK)
+        if self.state == "menu":
+            self._draw_menu()
+        elif self.state == "settings":
+            self._draw_settings()
+
+        elif self.state == "playing":
+            self._draw_game()
+
+        elif self.state == "game_over":
+            self._draw_game_over()
+
+        elif self.state == "victory":
+            self._draw_victory()
+
         self._draw_grid()
         for enemy in self.enemies:
             enemy.draw(self.screen, self.player.world_x, self.player.world_y)
