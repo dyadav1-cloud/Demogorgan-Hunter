@@ -194,6 +194,10 @@ class Game():
                 elif self.state == "playing":
                     self._shoot()
 
+                elif self.state == "settings":
+                    if self.back_button.collidepoint(mouse_pos):
+                        self.state = "menu"
+
     def _update(self, delta):
 
         if self.state != "playing":
@@ -359,15 +363,16 @@ class Game():
 
     def _draw_settings(self):
         title_font = pygame.font.SysFont(None, 80)
+        button_font = pygame.font.SysFont(None, 40)
+
         text = title_font.render("Settings", True, WHITE)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
         self.screen.blit(text, text_rect)
 
-    def _draw_settings(self):
-        title_font = pygame.font.SysFont(None, 80)
-        text = title_font.render("Settings", True, WHITE)
-        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
-        self.screen.blit(text, text_rect)
+        back_text = button_font.render("Back", True, WHITE)
+        back_rect = back_text.get_rect(center=self.back_button.center)
+
+        self.screen.blit(back_text, back_rect)
 
     def _draw_game_over(self):
         title_font = pygame.font.SysFont(None, 100)
