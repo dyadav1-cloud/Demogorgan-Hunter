@@ -100,15 +100,15 @@ class Bullet(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, health):
         super().__init__()
         self.image = pygame.image.load("enemy.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
         self.rect = self.image.get_rect()
 
-        self.health = ENEMY_HEALTH
-        self.max_health = ENEMY_MAX_HEALTH
+        self.health = health
+        self.max_health = health
         self.world_x = x
         self.world_y = y
         self.speed = ENEMY_SPEED
@@ -152,9 +152,11 @@ class Enemy(pygame.sprite.Sprite):
 class Game():
     def __init__(self):
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
         pygame.display.set_caption(GAME_TITTLE)
         self.state = "menu"
         self.previous_state = "menu"
+
         self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
         self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
         self.back_button = pygame.Rect(50, 50, 150, 50)
@@ -162,6 +164,11 @@ class Game():
         self.continue_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 350, 200, 60)
         self.pause_settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
         self.quit_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
+
+        self.wave = 1
+        self.wave_in_progress = True
+        self.enemies_spawned = 0
+        self.enemies_to_spawn = 5
 
         self.play_again_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 450, 200, 60)
         self.game_over_menu_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 550, 200, 60)
@@ -188,6 +195,25 @@ class Game():
         self.gun_image = pygame.image.load("gun.png").convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
+    def _setup_wave(self):
+        self.enemies_spawned = 0
+        self.wave_in_progress = True
+
+        if self.wave == 1:
+            self.enemies_to_spawn = 5
+            self.enemy_spawn_delay = 1.2
+            self.current_enemy_health = 60
+
+        elif self.wave == 2:
+            self.enemies_to_spawn = 8
+            self.enemy_spawn_delay = 0.9
+            self.current_enemy_health = 90
+
+        elif self.wave == 3:
+            self.enemies_to_spawn = 12
+            self.enemy_spawn_delay = 0.7
+            self.current_enemy_health = 120
+
     def _reset_game(self):
         self.score = 0
 
@@ -199,7 +225,13 @@ class Game():
         self.bullets = pygame.sprite.Group()
 
         self.enemy_spawn_timer = 0
-        self.enemy_spawn_delay = 1.0
+    
+        self.wave = 1
+        self.wave_in_progress = True
+        self.enemies_spawned = 0
+        self.enemies_to_spawn = 5
+        self.current_enemy_health = 60
+        self._setup_wave()
 
 
     def _handle_events(self):
@@ -289,10 +321,11 @@ class Game():
         for enemy in self.enemies:
             enemy.update(delta, self.player.world_x, self.player.world_y)
 
-        self.enemy_spawn_timer += delta
-        if self.enemy_spawn_timer >= self.enemy_spawn_delay:
-            self._spawn_enemy()
-            self.enemy_spawn_timer = 0
+        if self.wave_in_progress and self.enemies_spawned < self.enemies_to_spawn:
+            self.enemy_spawn_timer += delta
+            if self.enemy_spawn_timer >= self.enemy_spawn_delay:
+                self._spawn_enemy()
+                self.enemy_spawn_timer = 0
 
         for bullet in self.bullets.copy():
             for enemy in self.enemies.copy():
@@ -320,7 +353,19 @@ class Game():
                 
                 if self.player.health <= 0:
                     self.state = "game_over"
-    
+
+        if self.wave_in_progress:
+            if self.enemies_spawned >= self.enemies_to_spawn and len(self.enemies) == 0:
+                self.wave += 1
+
+                if self.wave <= 3:
+                    self._setup_wave()
+                else:
+                    self.state = "game_over"
+
+    def _draw_wave(self):
+        wave_text = self.font.render(f"Wave: {self.wave}", True, WHITE)
+        self.screen.blit(wave_text, (20, 70))
 
     def _draw_pause_button(self):
         pygame.draw.rect(self.screen, DARK_BLUE, self.pause_button)
@@ -458,8 +503,9 @@ class Game():
             x = self.player.world_x + WINDOW_WIDTH // 2 + margin
             y = random.randint(-WINDOW_HEIGHT, WINDOW_HEIGHT)
 
-        enemy = Enemy(x, y)
+        enemy = Enemy(x, y, self.current_enemy_health)
         self.enemies.add(enemy)
+        self.enemies_spawned += 1
 
     def _draw_menu(self):
         title_font = pygame.font.SysFont(None, 100)
@@ -558,6 +604,7 @@ class Game():
         for bullet in self.bullets:
             bullet.draw(self.screen, self.player.world_x, self.player.world_y)
 
+        self._draw_wave()
         self._draw_player_health()
         self._draw_score()
         self._draw_pause_button()
