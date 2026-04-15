@@ -34,13 +34,13 @@ DAMAGE = 34
 BULLET_SPEED = 800
 
 # Boss constants
-BOSS_WIDTH, BOSS_HEIGHT = 220, 220
-BOSS_SPEED = 120
-BOSS_HEALTH = 500
+BOSS_WIDTH, BOSS_HEIGHT = 250, 250
+BOSS_SPEED = 135
+BOSS_HEALTH = 1500
 BOSS_DAMAGE = 30
-BOSS_LASER_SPEED = 500
-BOSS_LASER_DAMAGE = 20
-BOSS_LASER_COOLDOWN = 2.0
+BOSS_LASER_SPEED = 900
+BOSS_LASER_DAMAGE = 45
+BOSS_LASER_COOLDOWN = 1.5
 
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
@@ -297,17 +297,17 @@ class Game():
         self.wave_in_progress = True
 
         if self.wave == 1:
-            self.enemies_to_spawn = 1
+            self.enemies_to_spawn = 5
             self.enemy_spawn_delay = 1.2
             self.current_enemy_health = 60
 
         elif self.wave == 2:
-            self.enemies_to_spawn = 1
+            self.enemies_to_spawn = 8
             self.enemy_spawn_delay = 0.9
             self.current_enemy_health = 90
 
         elif self.wave == 3:
-            self.enemies_to_spawn = 1
+            self.enemies_to_spawn = 12
             self.enemy_spawn_delay = 0.7
             self.current_enemy_health = 120
 
