@@ -626,6 +626,7 @@ class Game():
 
                         enemy.kill()
                         self.score += 1
+                        
 
                         if random.random() < POWERUP_DROP_CHANCE:
                             power_type = random.choice(["health", "health", "damage", "speed"])
@@ -865,6 +866,7 @@ class Game():
 
         bullet = Bullet(bullet_x, bullet_y, angle, self.current_bullet_damage)
         self.bullets.add(bullet)
+        self.shoot_sound.play()
 
     def _spawn_enemy(self):
         side = random.choice(["top","bottom","left","right"])
