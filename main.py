@@ -501,7 +501,7 @@ class Game():
                         self.score += 1
 
                         if random.random() < POWERUP_DROP_CHANCE:
-                            power_type = random.choice(["health", "damage", "speed"])
+                            power_type = random.choice(["health", "health", "damage", "speed"])
                             powerup = PowerUp(drop_x, drop_y, power_type)
                             self.powerups.add(powerup)
                     break
