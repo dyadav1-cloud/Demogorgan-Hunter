@@ -286,13 +286,13 @@ class Game():
         self.lightning_flash_time = 0
 
         self.ash_particles = []
-        for _ in range(80):
+        for _ in range(120):
             self.ash_particles.append([
-                random.randint(0, WINDOW_WIDTH),     # x
-                random.randint(0, WINDOW_HEIGHT),    # y
-                random.uniform(10, 30),              # speed
-                random.randint(1, 3),                # size
-                random.randint(80, 180)              # alpha
+                random.randint(-2000, 2000),   # world x
+                random.randint(-2000, 2000),   # world y
+                random.uniform(10, 25),        # fall speed
+                random.randint(1, 3),          # size
+                random.randint(80, 180)        # alpha
             ])
 
         pygame.display.set_caption(GAME_TITTLE)
@@ -353,19 +353,19 @@ class Game():
         self.lightning_timer -= delta
 
         if self.lightning_timer <= 0:
-            self.lightning_flash_time = 0.15
-            self.lightning_timer = random.uniform(5, 10)
+            self.lightning_flash_time = 0.22
+            self.lightning_timer = random.uniform(3, 6)
 
         if self.lightning_flash_time > 0:
             self.lightning_flash_time -= delta
 
         for particle in self.ash_particles:
             particle[1] += particle[2] * delta
-            particle[0] += random.uniform(-10, 10) * delta
+            particle[0] += random.uniform(-6, 6) * delta
 
-            if particle[1] > WINDOW_HEIGHT:
-                particle[0] = random.randint(0, WINDOW_WIDTH)
-                particle[1] = random.randint(-50, -10)
+            if particle[1] > self.player.world_y + WINDOW_HEIGHT:
+                particle[0] = self.player.world_x + random.randint(-WINDOW_WIDTH, WINDOW_WIDTH)
+                particle[1] = self.player.world_y - random.randint(WINDOW_HEIGHT, WINDOW_HEIGHT + 300)
 
     def _draw_atmosphere_overlay(self):
         # faint red tint over whole screen
@@ -376,14 +376,23 @@ class Game():
 
         # white floating ash / spores
         for x, y, speed, size, alpha in self.ash_particles:
-            particle_surf = pygame.Surface((size * 2 + 2, size * 2 + 2), pygame.SRCALPHA)
-            pygame.draw.circle(particle_surf, (220, 220, 220, alpha), (size + 1, size + 1), size)
-            self.screen.blit(particle_surf, (x, y))
+            screen_x = x - self.player.world_x + WINDOW_WIDTH // 2
+            screen_y = y - self.player.world_y + WINDOW_HEIGHT // 2
+
+            if -20 <= screen_x <= WINDOW_WIDTH + 20 and -20 <= screen_y <= WINDOW_HEIGHT + 20:
+                particle_surf = pygame.Surface((size * 2 + 2, size * 2 + 2), pygame.SRCALPHA)
+                pygame.draw.circle(
+                    particle_surf,
+                    (230, 230, 230, alpha),
+                    (size + 1, size + 1),
+                    size
+                )
+                self.screen.blit(particle_surf, (screen_x, screen_y))
 
         # lightning flash
         if self.lightning_flash_time > 0:
             flash = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-            flash.fill((180, 180, 255, 40))
+            flash.fill((235, 235, 255, 75))
             self.screen.blit(flash, (0, 0))
 
     def _setup_wave(self):
@@ -533,7 +542,7 @@ class Game():
         if self.state != "playing":
             return
         self._update_overlay_effects(delta)
-        
+
         self.player.update(delta)
         self.bullets.update(delta)
 
