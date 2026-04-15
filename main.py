@@ -531,9 +531,8 @@ class Game():
     def _update(self, delta):
         
         if self.state != "playing":
-            self._update_overlay_effects(delta)
-        else:
             return
+        self._update_overlay_effects(delta)
         
         self.player.update(delta)
         self.bullets.update(delta)
