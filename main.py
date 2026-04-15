@@ -373,12 +373,6 @@ class Game():
         red_overlay.fill((60, 0, 0, 25))
         self.screen.blit(red_overlay, (0, 0))
 
-        # a few soft red fog patches
-        fog = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-        pygame.draw.ellipse(fog, (120, 20, 20, 18), (150, 100, 500, 250))
-        pygame.draw.ellipse(fog, (100, 10, 10, 15), (900, 500, 600, 300))
-        pygame.draw.ellipse(fog, (140, 30, 30, 12), (500, 250, 700, 350))
-        self.screen.blit(fog, (0, 0))
 
         # white floating ash / spores
         for x, y, speed, size, alpha in self.ash_particles:
@@ -553,6 +547,7 @@ class Game():
         
         if self.state != "playing":
             self._update_overlay_effects(delta)
+        else:
             return
         
         self.player.update(delta)
