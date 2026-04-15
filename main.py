@@ -79,15 +79,20 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, delta):
         keys = pygame.key.get_pressed()
+        moving = False
 
         if keys[pygame.K_w]:
             self.world_y -= self.speed * delta
+            moving = True
         if keys[pygame.K_s]:
             self.world_y += self.speed * delta
+            moving = True
         if keys[pygame.K_a]:
             self.world_x -= self.speed * delta
+            moving = True
         if keys[pygame.K_d]:
             self.world_x += self.speed * delta
+            moving = True
 
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         center_x = WINDOW_WIDTH // 2
@@ -299,6 +304,7 @@ class Game():
         pygame.display.set_caption(GAME_TITTLE)
         self.state = "menu"
         self.previous_state = "menu"
+        self.last_state = self.state
 
         # Sound effects
         self.shoot_sound = pygame.mixer.Sound("sounds/gunshot.mp3")
@@ -741,6 +747,21 @@ class Game():
 
                 if self.player.health <= 0:
                     self.state = "game_over"
+
+        if self.state != self.last_state:
+            if self.state == "game_over":
+                pygame.mixer.music.stop()
+                self.game_over_sound.play()
+
+            elif self.state == "victory":
+                pygame.mixer.music.stop()
+                self.enemy_death_sound.play()
+                self.victory_sound.play()
+
+            elif self.state == "menu":
+                self._play_music("sounds/final_boss_main_menu.mp3")
+
+            self.last_state = self.state
 
         
 
