@@ -494,9 +494,46 @@ class Game():
                     bullet.kill()
 
                     if enemy.health <= 0:
+                        drop_x = enemy.world_x
+                        drop_y = enemy.world_y
+
                         enemy.kill()
                         self.score += 1
+
+                        if random.random() < POWERUP_DROP_CHANCE:
+                            power_type = random.choice(["health", "damage", "speed"])
+                            powerup = PowerUp(drop_x, drop_y, power_type)
+                            self.powerups.add(powerup)
                     break
+
+        for powerup in self.powerups.copy():
+            dx = powerup.world_x - self.player.world_x
+            dy = powerup.world_y - self.player.world_y
+            distance = math.sqrt(dx * dx + dy * dy)
+
+            if distance < 50:
+                if powerup.power_type == "health":
+                    self.player.health = min(self.player.max_health, self.player.health + HEALTH_PACK_AMOUNT)
+
+                elif powerup.power_type == "damage":
+                    self.current_bullet_damage = DAMAGE + DAMAGE_BOOST_AMOUNT
+                    self.damage_boost_timer = DAMAGE_BOOST_DURATION
+
+                elif powerup.power_type == "speed":
+                    self.player.speed = PLAYER_SPEED + SPEED_BOOST_AMOUNT
+                    self.speed_boost_timer = SPEED_BOOST_DURATION
+
+                powerup.kill()   
+
+        if self.damage_boost_timer > 0:
+            self.damage_boost_timer -= delta
+            if self.damage_boost_timer <= 0:
+                self.current_bullet_damage = DAMAGE
+
+        if self.speed_boost_timer > 0:
+            self.speed_boost_timer -= delta
+            if self.speed_boost_timer <= 0:
+                self.player.speed = PLAYER_SPEED
 
         if self.boss is not None:
             for bullet in self.bullets.copy():
@@ -574,6 +611,8 @@ class Game():
 
                 if self.player.health <= 0:
                     self.state = "game_over"
+
+        
 
         
 
@@ -742,6 +781,18 @@ class Game():
         laser = BossLaser(laser_x, laser_y, angle)
         self.boss_lasers.add(laser)
 
+    def _draw_powerup_status(self):
+        y = 110
+
+        if self.damage_boost_timer > 0:
+            text = self.font.render(f"Damage Boost: {self.damage_boost_timer:.1f}s", True, WHITE)
+            self.screen.blit(text, (20, y))
+            y += 35
+
+        if self.speed_boost_timer > 0:
+            text = self.font.render(f"Speed Boost: {self.speed_boost_timer:.1f}s", True, WHITE)
+            self.screen.blit(text, (20, y))
+
     def _draw_menu(self):
         title_font = pygame.font.SysFont(None, 100)
         button_font = pygame.font.SysFont(None, 50)
@@ -865,6 +916,11 @@ class Game():
         for enemy in self.enemies:
             enemy.draw(self.screen, self.player.world_x, self.player.world_y)
             enemy.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
+
+        for powerup in self.powerups:
+            powerup.draw(self.screen, self.player.world_x, self.player.world_y)
+
+        self._draw_powerup_status()
 
         self._draw_wave()
         self._draw_player_health()
