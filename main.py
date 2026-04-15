@@ -42,6 +42,18 @@ BOSS_LASER_SPEED = 900
 BOSS_LASER_DAMAGE = 45
 BOSS_LASER_COOLDOWN = 1.5
 
+# Power-ups constants
+POWERUP_WIDTH, POWERUP_HEIGHT = 40, 40
+POWERUP_DROP_CHANCE = 0.35
+
+HEALTH_PACK_AMOUNT = 25
+
+DAMAGE_BOOST_AMOUNT = 20
+DAMAGE_BOOST_DURATION = 5.0
+
+SPEED_BOOST_AMOUNT = 150
+SPEED_BOOST_DURATION = 5.0
+
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -85,12 +97,12 @@ class Player(pygame.sprite.Sprite):
             self.image = self.original_image
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, world_x, world_y, angle):
+    def __init__(self, world_x, world_y, angle, damage):
         super().__init__()
         self.image = pygame.Surface((6, 6), pygame.SRCALPHA)
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect(center=(world_x, world_y))
-        self.damage = DAMAGE
+        self.damage = damage
         self.world_x = world_x
         self.world_y = world_y
         self.angle = angle
@@ -242,6 +254,24 @@ class Boss(pygame.sprite.Sprite):
         pygame.draw.rect(screen, GREEN, (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
         pygame.draw.rect(screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 2)
 
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, world_x, world_y, power_type):
+        super().__init__()
+        self.image = pygame.image.load("star_no_bg.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (POWERUP_WIDTH, POWERUP_HEIGHT))
+        self.rect = self.image.get_rect()
+
+        self.world_x = world_x
+        self.world_y = world_y
+        self.power_type = power_type
+
+    def draw(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        self.rect.center = (screen_x, screen_y)
+        screen.blit(self.image, self.rect)
+
 class Game():
     def __init__(self):
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -288,6 +318,14 @@ class Game():
         self.boss = None
         self.boss_lasers = pygame.sprite.Group()
         self.boss_spawned = False
+
+        self.powerups = pygame.sprite.Group()
+
+        self.damage_boost_timer = 0
+        self.speed_boost_timer = 0
+
+        self.current_bullet_damage = DAMAGE
+        self.current_player_speed = PLAYER_SPEED
 
         self.gun_image = pygame.image.load("gun.png").convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
@@ -337,6 +375,16 @@ class Game():
         self.boss = None
         self.boss_lasers = pygame.sprite.Group()
         self.boss_spawned = False
+
+        self.powerups = pygame.sprite.Group()
+
+        self.damage_boost_timer = 0
+        self.speed_boost_timer = 0
+
+        self.current_bullet_damage = DAMAGE
+        self.current_player_speed = PLAYER_SPEED
+
+        self.player.speed = PLAYER_SPEED
 
         self._setup_wave()
 
@@ -649,7 +697,7 @@ class Game():
         bullet_x = self.player.world_x + math.cos(angle) * gun_distance
         bullet_y = self.player.world_y + math.sin(angle) * gun_distance
 
-        bullet = Bullet(bullet_x, bullet_y, angle)
+        bullet = Bullet(bullet_x, bullet_y, angle, self.current_bullet_damage)
         self.bullets.add(bullet)
 
     def _spawn_enemy(self):
