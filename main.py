@@ -106,6 +106,8 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = self.original_image
 
+        return moving
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, world_x, world_y, angle, damage):
         super().__init__()
