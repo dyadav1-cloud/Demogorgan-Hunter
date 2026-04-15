@@ -559,6 +559,7 @@ class Game():
                     elif self.quit_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
+                        self._play_music("sounds/final_boss_main_menu.mp3")
 
                 elif self.state == "game_over":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -568,6 +569,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
+                        self._play_music("sounds/final_boss_main_menu.mp3")
 
                 elif self.state == "victory":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -577,6 +579,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
+                        self._play_music("sounds/final_boss_main_menu.mp3")
 
     def _change_resolution(self, width, height):
         global WINDOW_WIDTH, WINDOW_HEIGHT
