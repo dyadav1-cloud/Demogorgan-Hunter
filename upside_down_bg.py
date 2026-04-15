@@ -13,17 +13,17 @@ import random
 #   bg.draw(screen, player.world_x, player.world_y)
 # ---------------------------------------------------------------------------
 
-C_VOID        = ( 4,  8, 18)
-C_GROUND_BASE = ( 8, 16, 32)
-C_GROUND_MID  = (10, 22, 44)
-C_GROUND_HI   = (14, 32, 58)
-C_CRACK       = ( 6, 12, 24)
-C_VINE        = (10, 40, 55)
-C_VINE_NODE   = (14, 60, 78)
-C_SPORE       = (80, 180, 210)
-C_GLOW_INNER  = (60, 160, 200)
-C_GLOW_MID    = (20,  80, 120)
-C_VIGNETTE    = ( 2,   5,  12)
+C_VOID        = (5, 5, 8)
+C_GROUND_BASE = (18, 16, 20)
+C_GROUND_MID  = (28, 24, 30)
+C_GROUND_HI   = (40, 34, 42)
+C_CRACK       = (8, 8, 10)
+C_VINE        = (30, 32, 36)
+C_VINE_NODE   = (50, 55, 60)
+C_SPORE       = (90, 110, 120)
+C_GLOW_INNER  = (40, 60, 70)
+C_GLOW_MID    = (20, 30, 40)
+C_VIGNETTE    = (2, 2, 4)
 
 
 def _hex(c, a=255):
@@ -219,19 +219,6 @@ class UpsideDownBackground:
                 screen.blit(self._tile,
                             (col * t - world_left, row * t - world_top))
 
-        # 3. Glow pools
-        gp = self._glow_period
-        gx_off = math.fmod(world_left, gp)
-        gy_off = math.fmod(world_top,  gp)
-        for (gx, gy, gr) in self._glows:
-            for ox in range(-1, 3):
-                for oy in range(-1, 3):
-                    sx = gx - gx_off + ox * gp
-                    sy = gy - gy_off + oy * gp
-                    if -gr * 2 < sx < sw + gr * 2 and -gr * 2 < sy < sh + gr * 2:
-                        gs = self._get_glow_surf(gr)
-                        screen.blit(gs, (int(sx) - gr, int(sy) - gr),
-                                    special_flags=pygame.BLEND_RGBA_ADD)
 
         # 4. Vines
         vp = self._vine_period
@@ -274,12 +261,6 @@ class UpsideDownBackground:
                         pygame.draw.ellipse(spore, (*C_SPORE, alpha),
                                             (0, 0, r * 2 + 2, h * 2 + 2))
                         screen.blit(spore, (int(sx) - r - 1, int(sy) - h - 1))
-
-        # 6. Faint teal centre haze (atmospheric depth)
-        haze = pygame.Surface((sw, sh), pygame.SRCALPHA)
-        pygame.draw.ellipse(haze, (*C_GLOW_MID, 18),
-                            (sw // 4, sh // 4, sw // 2, sh // 2))
-        screen.blit(haze, (0, 0), special_flags=pygame.BLEND_RGBA_ADD)
 
         # 7. Vignette
         if self._vignette_size != (sw, sh):
