@@ -393,7 +393,7 @@ class Game():
         self.gun_image = pygame.image.load(get_asset_path("gun.png")).convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
-        self._play_music("sounds/final_boss_main_menu.mp3")
+        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
 
     def _update_overlay_effects(self, delta):
         self.lightning_timer -= delta
@@ -561,7 +561,7 @@ class Game():
                     elif self.quit_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music("sounds/final_boss_main_menu.mp3")
+                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
 
                 elif self.state == "game_over":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -571,7 +571,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music("sounds/final_boss_main_menu.mp3")
+                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
 
                 elif self.state == "victory":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -581,7 +581,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music("sounds/final_boss_main_menu.mp3")
+                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
 
     def _change_resolution(self, width, height):
         global WINDOW_WIDTH, WINDOW_HEIGHT
@@ -616,9 +616,9 @@ class Game():
 
         if self.state == "playing":
             if self.wave == 4:
-                self._play_music("sounds/final_boss_main_menu.mp3")
+                self._play_music(get_asset_path("final_boss_main_menu.mp3"))
             else:
-                self._play_music("sounds/ingame_background.mp3")
+                self._play_music(get_asset_path("ingame_background.mp3"))
 
         moving = self.player.update(delta)
         if moving:
@@ -778,14 +778,11 @@ class Game():
                 self.victory_sound.play()
 
             elif self.state == "menu":
-                self._play_music("sounds/final_boss_main_menu.mp3")
+                self._play_music(get_asset_path("final_boss_main_menu.mp3"))
 
             self.last_state = self.state
 
         
-
-        
-
     def _draw_wave(self):
         wave_text = self.font.render(f"Wave: {self.wave}", True, WHITE)
         self.screen.blit(wave_text, (20, 70))
