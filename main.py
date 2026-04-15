@@ -1000,6 +1000,8 @@ class Game():
 
         self._draw_powerup_status()
 
+        self._draw_atmosphere_overlay()
+        
         self._draw_wave()
         self._draw_player_health()
         self._draw_score()
