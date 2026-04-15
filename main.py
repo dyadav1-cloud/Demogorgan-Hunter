@@ -318,6 +318,7 @@ class Game():
         # Optional victory sound if you have one
         # If your victory file has a different name, change it here
         self.victory_sound = pygame.mixer.Sound("sounds/victory.mp3")
+        self.lightning_sound = pygame.mixer.Sound("sounds/lightning.mp3")
 
         # Volumes
         self.shoot_sound.set_volume(0.35)
@@ -328,6 +329,7 @@ class Game():
         self.game_over_sound.set_volume(0.4)
         self.menu_click_sound.set_volume(0.35)
         self.victory_sound.set_volume(0.45)
+        self.lightning_sound.set_volume(0.3)
 
         # Footstep timing
         self.footstep_timer = 0
@@ -394,6 +396,7 @@ class Game():
         if self.lightning_timer <= 0:
             self.lightning_flash_time = 0.22
             self.lightning_timer = random.uniform(3, 6)
+            self.lightning_sound.play()
 
         if self.lightning_flash_time > 0:
             self.lightning_flash_time -= delta
@@ -610,7 +613,15 @@ class Game():
             else:
                 self._play_music("sounds/ingame_background.mp3")
 
-        self.player.update(delta)
+        moving = self.player.update(delta)
+        if moving:
+            self.footstep_timer -= delta
+            if self.footstep_timer <= 0:
+                self.footstep_sound.play()
+                self.footstep_timer = self.footstep_delay
+        else:
+            self.footstep_timer = 0
+
         self.bullets.update(delta)
 
         for enemy in self.enemies:
