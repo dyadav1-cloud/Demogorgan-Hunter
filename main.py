@@ -33,6 +33,15 @@ ENEMY_MAX_HEALTH = 100
 DAMAGE = 34
 BULLET_SPEED = 800
 
+# Boss constants
+BOSS_WIDTH, BOSS_HEIGHT = 220, 220
+BOSS_SPEED = 120
+BOSS_HEALTH = 500
+BOSS_DAMAGE = 30
+BOSS_LASER_SPEED = 500
+BOSS_LASER_DAMAGE = 20
+BOSS_LASER_COOLDOWN = 2.0
+
 #Sprite clasess
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -147,7 +156,92 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = (screen_x, screen_y)
         screen.blit(self.image, self.rect)
 
+class BossLaser(pygame.sprite.Sprite):
+    def __init__(self, world_x, world_y, angle):
+        super().__init__()
 
+        # Replace this with your laser sprite later if needed
+        self.image = pygame.Surface((24, 8), pygame.SRCALPHA)
+        self.image.fill(RED)
+
+        self.rect = self.image.get_rect()
+        self.world_x = world_x
+        self.world_y = world_y
+        self.angle = angle
+        self.speed = BOSS_LASER_SPEED
+        self.damage = BOSS_LASER_DAMAGE
+
+    def update(self, delta):
+        self.world_x += math.cos(self.angle) * self.speed * delta
+        self.world_y += math.sin(self.angle) * self.speed * delta
+
+    def draw(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        rotated = pygame.transform.rotate(self.image, -math.degrees(self.angle))
+        self.rect = rotated.get_rect(center=(screen_x, screen_y))
+        screen.blit(rotated, self.rect)
+
+class Boss(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+
+        self.image = pygame.image.load("boss.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (BOSS_WIDTH, BOSS_HEIGHT))
+        self.rect = self.image.get_rect()
+
+        self.world_x = x
+        self.world_y = y
+        self.health = BOSS_HEALTH
+        self.max_health = BOSS_HEALTH
+        self.speed = BOSS_SPEED
+
+        self.laser_timer = 0
+        self.laser_cooldown = BOSS_LASER_COOLDOWN
+
+    def update(self, delta, player_world_x, player_world_y):
+        dx = player_world_x - self.world_x
+        dy = player_world_y - self.world_y
+
+        distance = math.sqrt(dx * dx + dy * dy)
+
+        if distance != 0:
+            dx /= distance
+            dy /= distance
+
+        self.world_x += dx * self.speed * delta
+        self.world_y += dy * self.speed * delta
+
+        self.laser_timer += delta
+
+    def can_shoot(self):
+        return self.laser_timer >= self.laser_cooldown
+    
+    def reset_laser_timer(self):
+        self.laser_timer = 0
+
+    def draw(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        self.rect.center = (screen_x, screen_y)
+        screen.blit(self.image, self.rect)
+
+    def draw_health_bar(self, screen, player_world_x, player_world_y):
+        screen_x = self.world_x - player_world_x + WINDOW_WIDTH // 2
+        screen_y = self.world_y - player_world_y + WINDOW_HEIGHT // 2
+
+        bar_width = 180
+        bar_height = 12
+        health_ratio = self.health / self.max_health
+
+        bar_x = screen_x - bar_width // 2
+        bar_y = screen_y - BOSS_HEIGHT // 2 - 18
+
+        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
+        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+        pygame.draw.rect(screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 2)
 
 class Game():
     def __init__(self):
@@ -192,6 +286,10 @@ class Game():
 
         self.bullets = pygame.sprite.Group()
 
+        self.boss = None
+        self.boss_lasers = pygame.sprite.Group()
+        self.boss_spawned = False
+
         self.gun_image = pygame.image.load("gun.png").convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
@@ -214,6 +312,11 @@ class Game():
             self.enemy_spawn_delay = 0.7
             self.current_enemy_health = 120
 
+        elif self.wave == 4:
+            self.enemies_to_spawn = 0
+            self.enemy_spawn_delay = 999
+            self.current_enemy_health = 0
+
     def _reset_game(self):
         self.score = 0
 
@@ -231,6 +334,11 @@ class Game():
         self.enemies_spawned = 0
         self.enemies_to_spawn = 5
         self.current_enemy_health = 60
+
+        self.boss = None
+        self.boss_lasers = pygame.sprite.Group()
+        self.boss_spawned = False
+
         self._setup_wave()
 
 
@@ -342,6 +450,20 @@ class Game():
                         self.score += 1
                     break
 
+
+        self.boss_lasers.update(delta)
+
+        if self.wave == 4:
+            if not self.boss_spawned:
+                self._spawn_boss()
+
+            if self.boss is not None:
+                self.boss.update(delta, self.player.world_x, self.player.world_y)
+
+                if self.boss.can_shoot():
+                    self._boss_shoot()
+                    self.boss.reset_laser_timer()
+
         for enemy in self.enemies.copy():
             dx = enemy.world_x - self.player.world_x
             dy = enemy.world_y - self.player.world_y
@@ -362,6 +484,8 @@ class Game():
                     self._setup_wave()
                 else:
                     self.state = "game_over"
+
+        
 
     def _draw_wave(self):
         wave_text = self.font.render(f"Wave: {self.wave}", True, WHITE)
@@ -506,6 +630,27 @@ class Game():
         enemy = Enemy(x, y, self.current_enemy_health)
         self.enemies.add(enemy)
         self.enemies_spawned += 1
+
+    def _spawn_boss(self):
+        boss_x = self.player.world_x
+        boss_y = self.player.world_y - WINDOW_HEIGHT // 2 - 300
+
+        self.boss = Boss(boss_x, boss_y)
+        self.boss_spawned = True
+
+    def _boss_shoot(self):
+        if self.boss is None:
+            return
+
+        dx = self.player.world_x - self.boss.world_x
+        dy = self.player.world_y - self.boss.world_y
+        angle = math.atan2(dy, dx)
+
+        laser_x = self.boss.world_x + math.cos(angle) * 40
+        laser_y = self.boss.world_y + math.sin(angle) * 40
+
+        laser = BossLaser(laser_x, laser_y, angle)
+        self.boss_lasers.add(laser)
 
     def _draw_menu(self):
         title_font = pygame.font.SysFont(None, 100)
