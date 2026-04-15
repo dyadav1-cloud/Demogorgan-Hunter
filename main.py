@@ -394,6 +394,13 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.state = "menu"
 
+                elif self.state == "victory":
+                    if self.play_again_button.collidepoint(mouse_pos):
+                        self._reset_game()
+                        self.state = "playing"
+                    elif self.game_over_menu_button.collidepoint(mouse_pos):
+                        self.state = "menu"
+
     def _change_resolution(self, width, height):
         global WINDOW_WIDTH, WINDOW_HEIGHT
 
