@@ -69,7 +69,7 @@ SPEED_BOOST_DURATION = 5.0
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.original_image = pygame.image.load(get_asset_path("player_transparant.png")).convert_alpha()
+        self.original_image = pygame.image.load(get_asset_path("sprites/player_transparant.png")).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
         
@@ -141,7 +141,7 @@ class Bullet(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, health):
         super().__init__()
-        self.image = pygame.image.load(get_asset_path("enemy.png")).convert_alpha()
+        self.image = pygame.image.load(get_asset_path("sprites/enemy.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
         self.rect = self.image.get_rect()
@@ -191,7 +191,7 @@ class BossLaser(pygame.sprite.Sprite):
         super().__init__()
 
         # Replace this with your laser sprite later if needed
-        self.image = pygame.image.load(get_asset_path("preview.gif")).convert_alpha()
+        self.image = pygame.image.load(get_asset_path("sprites/preview.gif")).convert_alpha()
         self.image = pygame.transform.scale(self.image, ((40, 40)))
         self.rect = self.image.get_rect()
         self.world_x = world_x
@@ -216,7 +216,7 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
 
-        self.image = pygame.image.load(get_asset_path("mind_flayer_final.png")).convert_alpha()
+        self.image = pygame.image.load(get_asset_path("sprites/mind_flayer_final.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (BOSS_WIDTH, BOSS_HEIGHT))
         self.rect = self.image.get_rect()
 
@@ -275,7 +275,7 @@ class Boss(pygame.sprite.Sprite):
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, world_x, world_y, power_type):
         super().__init__()
-        self.image = pygame.image.load(get_asset_path("star_no_bg.png")).convert_alpha()
+        self.image = pygame.image.load(get_asset_path("sprites/star_no_bg.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (POWERUP_WIDTH, POWERUP_HEIGHT))
         self.rect = self.image.get_rect()
 
@@ -315,15 +315,15 @@ class Game():
         self.last_state = self.state
 
         # Sound effects
-        self.shoot_sound = pygame.mixer.Sound(get_asset_path("gunshot.mp3"))
-        self.footstep_sound = pygame.mixer.Sound(get_asset_path("footsteps.mp3"))
-        self.laser_sound = pygame.mixer.Sound(get_asset_path("laser_sound.mp3"))
-        self.enemy_death_sound = pygame.mixer.Sound(get_asset_path("enemy_death.mp3"))
-        self.player_hurt_sound = pygame.mixer.Sound(get_asset_path("player_hurt.mp3"))
-        self.game_over_sound = pygame.mixer.Sound(get_asset_path("game_over.mp3"))
-        self.menu_click_sound = pygame.mixer.Sound(get_asset_path("menu_click.mp3"))
-        self.victory_sound = pygame.mixer.Sound(get_asset_path("victory.mp3"))
-        self.lightning_sound = pygame.mixer.Sound(get_asset_path("lightning.mp3"))
+        self.shoot_sound = pygame.mixer.Sound(get_asset_path("sounds/gunshot.mp3"))
+        self.footstep_sound = pygame.mixer.Sound(get_asset_path("sounds/footsteps.mp3"))
+        self.laser_sound = pygame.mixer.Sound(get_asset_path("sounds/laser_sound.mp3"))
+        self.enemy_death_sound = pygame.mixer.Sound(get_asset_path("sounds/enemy_death.mp3"))
+        self.player_hurt_sound = pygame.mixer.Sound(get_asset_path("sounds/player_hurt.mp3"))
+        self.game_over_sound = pygame.mixer.Sound(get_asset_path("sounds/game_over.mp3"))
+        self.menu_click_sound = pygame.mixer.Sound(get_asset_path("sounds/menu_click.mp3"))
+        self.victory_sound = pygame.mixer.Sound(get_asset_path("sounds/victory.mp3"))
+        self.lightning_sound = pygame.mixer.Sound(get_asset_path("sounds/lightning.mp3"))
 
         # Volumes
         self.shoot_sound.set_volume(0.35)
@@ -390,10 +390,10 @@ class Game():
         self.current_bullet_damage = DAMAGE
         self.current_player_speed = PLAYER_SPEED
 
-        self.gun_image = pygame.image.load(get_asset_path("gun.png")).convert_alpha()
+        self.gun_image = pygame.image.load(get_asset_path("sprites/gun.png")).convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
-        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+        self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
 
     def _update_overlay_effects(self, delta):
         self.lightning_timer -= delta
@@ -561,7 +561,7 @@ class Game():
                     elif self.quit_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+                        self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
 
                 elif self.state == "game_over":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -571,7 +571,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+                        self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
 
                 elif self.state == "victory":
                     if self.play_again_button.collidepoint(mouse_pos):
@@ -581,7 +581,7 @@ class Game():
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
                         self.menu_click_sound.play()
                         self.state = "menu"
-                        self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+                        self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
 
     def _change_resolution(self, width, height):
         global WINDOW_WIDTH, WINDOW_HEIGHT
@@ -616,9 +616,9 @@ class Game():
 
         if self.state == "playing":
             if self.wave == 4:
-                self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+                self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
             else:
-                self._play_music(get_asset_path("ingame_background.mp3"))
+                self._play_music(get_asset_path("sounds/ingame_background.mp3"))
 
         moving = self.player.update(delta)
         if moving:
@@ -778,7 +778,7 @@ class Game():
                 self.victory_sound.play()
 
             elif self.state == "menu":
-                self._play_music(get_asset_path("final_boss_main_menu.mp3"))
+                self._play_music(get_asset_path("sounds/final_boss_main_menu.mp3"))
 
             self.last_state = self.state
 
