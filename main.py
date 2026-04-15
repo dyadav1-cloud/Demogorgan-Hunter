@@ -466,19 +466,6 @@ class Game():
 
                     break
 
-        self.boss_lasers.update(delta)
-
-        if self.wave == 4:
-            if not self.boss_spawned:
-                self._spawn_boss()
-
-            if self.boss is not None:
-                self.boss.update(delta, self.player.world_x, self.player.world_y)
-
-                if self.boss.can_shoot():
-                    self._boss_shoot()
-                    self.boss.reset_laser_timer()
-
         for enemy in self.enemies.copy():
             dx = enemy.world_x - self.player.world_x
             dy = enemy.world_y - self.player.world_y
@@ -491,6 +478,31 @@ class Game():
                 if self.player.health <= 0:
                     self.state = "game_over"
 
+        self.boss_lasers.update(delta)
+        
+        for laser in self.boss_lasers.copy():
+            dx = laser.world_x - self.player.world_x
+            dy = laser.world_y - self.player.world_y
+            distance = math.sqrt(dx * dx + dy * dy)
+
+            if distance < 50:
+                self.player.health -= laser.damage
+                laser.kill()
+
+                if self.player.health <= 0:
+                    self.state = "game_over"
+
+        if self.wave == 4:
+            if not self.boss_spawned:
+                self._spawn_boss()
+
+            if self.boss is not None:
+                self.boss.update(delta, self.player.world_x, self.player.world_y)
+
+                if self.boss.can_shoot():
+                    self._boss_shoot()
+                    self.boss.reset_laser_timer()
+
         if self.wave_in_progress:
             if self.enemies_spawned >= self.enemies_to_spawn and len(self.enemies) == 0:
                 self.wave += 1
@@ -498,6 +510,17 @@ class Game():
                 if self.wave <= 3:
                     self._setup_wave()
                 else:
+                    self.state = "game_over"
+
+        if self.boss is not None:
+            dx = self.boss.world_x - self.player.world_x
+            dy = self.boss.world_y - self.player.world_y
+            distance = math.sqrt(dx * dx + dy * dy)
+
+            if distance < 100:
+                self.player.health -= BOSS_DAMAGE * delta
+
+                if self.player.health <= 0:
                     self.state = "game_over"
 
         
@@ -714,6 +737,23 @@ class Game():
         self.screen.blit(text_800, text_800.get_rect(center=self.res_800_button.center))
         self.screen.blit(back_text, back_text.get_rect(center=self.back_button.center))
 
+    def _draw_victory(self):
+        title_font = pygame.font.SysFont(None, 100)
+        button_font = pygame.font.SysFont(None, 45)
+
+        text = title_font.render("You Win!", True, GREEN)
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, 250))
+        self.screen.blit(text, text_rect)
+
+        pygame.draw.rect(self.screen, DARK_BLUE, self.play_again_button)
+        pygame.draw.rect(self.screen, DARK_BLUE, self.game_over_menu_button)
+
+        play_again_text = button_font.render("Play Again", True, WHITE)
+        menu_text = button_font.render("Main Menu", True, WHITE)
+
+        self.screen.blit(play_again_text, play_again_text.get_rect(center=self.play_again_button.center))
+        self.screen.blit(menu_text, menu_text.get_rect(center=self.game_over_menu_button.center))
+    
     def _draw_game_over(self):
         title_font = pygame.font.SysFont(None, 100)
         button_font = pygame.font.SysFont(None, 45)
@@ -749,20 +789,30 @@ class Game():
         elif self.state == "game_over":
             self._draw_game_over()
 
+        elif self.state == "victory":
+            self._draw_victory()
+
         pygame.display.flip()
 
     def _draw_game(self):
         self._draw_grid()
-
-        for enemy in self.enemies:
-            enemy.draw(self.screen, self.player.world_x, self.player.world_y)
-            enemy.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
 
         self.all_sprites.draw(self.screen)
         self._draw_gun()
 
         for bullet in self.bullets:
             bullet.draw(self.screen, self.player.world_x, self.player.world_y)
+
+        if self.boss is not None:
+            self.boss.draw(self.screen, self.player.world_x, self.player.world_y)
+            self.boss.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
+
+        for laser in self.boss_lasers:
+            laser.draw(self.screen, self.player.world_x, self.player.world_y)
+
+        for enemy in self.enemies:
+            enemy.draw(self.screen, self.player.world_x, self.player.world_y)
+            enemy.draw_health_bar(self.screen, self.player.world_x, self.player.world_y)
 
         self._draw_wave()
         self._draw_player_health()
