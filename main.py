@@ -386,21 +386,6 @@ class Game():
             flash.fill((180, 180, 255, 40))
             self.screen.blit(flash, (0, 0))
 
-            # optional simple lightning branches
-            for _ in range(2):
-                start_x = random.randint(100, WINDOW_WIDTH - 100)
-                points = [(start_x, 0)]
-                y = 0
-                x = start_x
-
-                while y < WINDOW_HEIGHT // 2:
-                    x += random.randint(-30, 30)
-                    y += random.randint(20, 50)
-                    points.append((x, y))
-
-                if len(points) > 1:
-                    pygame.draw.lines(self.screen, (200, 220, 255), False, points, 2)
-
     def _setup_wave(self):
         self.enemies_spawned = 0
         self.wave_in_progress = True
