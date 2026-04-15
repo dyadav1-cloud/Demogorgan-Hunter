@@ -450,6 +450,21 @@ class Game():
                         self.score += 1
                     break
 
+        if self.boss is not None:
+            for bullet in self.bullets.copy():
+                dx = bullet.world_x - self.boss.world_x
+                dy = bullet.world_y - self.boss.world_y
+                distance = math.sqrt(dx * dx + dy * dy)
+
+                if distance < 120:   # bigger hitbox for boss
+                    self.boss.health -= bullet.damage
+                    bullet.kill()
+
+                    if self.boss.health <= 0:
+                        self.boss = None
+                        self.state = "victory"
+
+                    break
 
         self.boss_lasers.update(delta)
 
