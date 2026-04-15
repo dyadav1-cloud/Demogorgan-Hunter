@@ -472,7 +472,6 @@ class Game():
 
     def _reset_game(self):
         self.score = 0
-
         self.player = Player()
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
