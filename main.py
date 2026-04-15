@@ -161,8 +161,7 @@ class BossLaser(pygame.sprite.Sprite):
         super().__init__()
 
         # Replace this with your laser sprite later if needed
-        self.image = pygame.Surface((24, 8), pygame.SRCALPHA)
-        self.image.fill(RED)
+        pygame.image.load("spritesheet.png").convert_alpha()
 
         self.rect = self.image.get_rect()
         self.world_x = world_x
