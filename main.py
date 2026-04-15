@@ -277,6 +277,8 @@ class Game():
     def __init__(self):
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+        self.bg = UpsideDownBackground(seed=42)
+
         pygame.display.set_caption(GAME_TITTLE)
         self.state = "menu"
         self.previous_state = "menu"
