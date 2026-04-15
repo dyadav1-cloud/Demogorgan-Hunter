@@ -309,7 +309,7 @@ class Game():
         # Sound effects
         self.shoot_sound = pygame.mixer.Sound("sounds/gunshot.mp3")
         self.footstep_sound = pygame.mixer.Sound("sounds/footsteps.mp3")
-        self.laser_sound = pygame.mixer.Sound("sounds/laser sound.mp3")
+        self.laser_sound = pygame.mixer.Sound("sounds/laser_sound.mp3")
         self.enemy_death_sound = pygame.mixer.Sound("sounds/enemy_death.mp3")
         self.player_hurt_sound = pygame.mixer.Sound("sounds/player_hurt.mp3")
         self.game_over_sound = pygame.mixer.Sound("sounds/game_over.mp3")
