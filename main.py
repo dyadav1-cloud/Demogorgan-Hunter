@@ -297,17 +297,17 @@ class Game():
         self.wave_in_progress = True
 
         if self.wave == 1:
-            self.enemies_to_spawn = 5
+            self.enemies_to_spawn = 1
             self.enemy_spawn_delay = 1.2
             self.current_enemy_health = 60
 
         elif self.wave == 2:
-            self.enemies_to_spawn = 8
+            self.enemies_to_spawn = 1
             self.enemy_spawn_delay = 0.9
             self.current_enemy_health = 90
 
         elif self.wave == 3:
-            self.enemies_to_spawn = 12
+            self.enemies_to_spawn = 1
             self.enemy_spawn_delay = 0.7
             self.current_enemy_health = 120
 
