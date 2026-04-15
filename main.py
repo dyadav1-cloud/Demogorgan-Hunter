@@ -436,12 +436,6 @@ class Game():
         for enemy in self.enemies:
             enemy.update(delta, self.player.world_x, self.player.world_y)
 
-        if self.wave_in_progress and self.enemies_spawned < self.enemies_to_spawn:
-            self.enemy_spawn_timer += delta
-            if self.enemy_spawn_timer >= self.enemy_spawn_delay:
-                self._spawn_enemy()
-                self.enemy_spawn_timer = 0
-
         for bullet in self.bullets.copy():
             for enemy in self.enemies.copy():
                 dx = bullet.world_x - enemy.world_x
@@ -499,6 +493,12 @@ class Game():
                 if self.player.health <= 0:
                     self.state = "game_over"
 
+        if self.wave_in_progress and self.wave <= 3 and self.enemies_spawned < self.enemies_to_spawn:
+            self.enemy_spawn_timer += delta
+            if self.enemy_spawn_timer >= self.enemy_spawn_delay:
+                self._spawn_enemy()
+                self.enemy_spawn_timer = 0
+
         if self.wave == 4:
             if not self.boss_spawned:
                 self._spawn_boss()
@@ -511,13 +511,11 @@ class Game():
                     self.boss.reset_laser_timer()
 
         if self.wave_in_progress:
-            if self.enemies_spawned >= self.enemies_to_spawn and len(self.enemies) == 0:
+            if self.wave <= 3 and self.enemies_spawned >= self.enemies_to_spawn and len(self.enemies) == 0:
                 self.wave += 1
 
-                if self.wave <= 3:
+                if self.wave <= 4:
                     self._setup_wave()
-                else:
-                    self.state = "game_over"
 
         if self.boss is not None:
             dx = self.boss.world_x - self.player.world_x
