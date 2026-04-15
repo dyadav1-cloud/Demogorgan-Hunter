@@ -772,6 +772,7 @@ class Game():
             elif self.state == "victory":
                 pygame.mixer.music.stop()
                 self.enemy_death_sound.play()
+                pygame.time.delay(150)
                 self.victory_sound.play()
 
             elif self.state == "menu":
