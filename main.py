@@ -161,8 +161,8 @@ class BossLaser(pygame.sprite.Sprite):
         super().__init__()
 
         # Replace this with your laser sprite later if needed
-        pygame.image.load("spritesheet.png").convert_alpha()
-
+        self.image = pygame.image.load("preview.gif").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (BOSS_WIDTH, BOSS_HEIGHT))
         self.rect = self.image.get_rect()
         self.world_x = world_x
         self.world_y = world_y
