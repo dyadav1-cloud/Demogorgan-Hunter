@@ -2,6 +2,7 @@ import pygame, os, math, random
 from upside_down_bg import UpsideDownBackground
 
 pygame.init()
+pygame.mixer.init()
 
 #Screen Dimension
 GAME_TITTLE = "Demogorgan Hunter!"
