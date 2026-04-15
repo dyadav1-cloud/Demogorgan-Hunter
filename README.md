@@ -19,10 +19,52 @@ A Stranger Things-inspired top-down survival shooter built with Python and Pygam
 ## How to Run
 Run:
 
-python dist//main.py
+python dist/main.py
 
-## Assets
-Game uses external image and sound assets collected for the project.
+## File Structure
+
+```
+/ (Root)
+├── README.md           # Project documentation (this file)
+├── DEMO.mp4            # Gameplay demo video (under 30 seconds)
+├── src/                # Development environment — raw, in-progress code (may have bugs, minimal comments)
+│   ├── main.py         # Main game file (game loop, wave logic, player, enemies, bullets, UI)
+│   ├── upside_down_bg.py  # Procedurally generated Upside Down background (vines, ground, atmosphere)
+│   └── assets/
+│       ├── sounds/     # All sound effects and music used in the game
+│       └── sprites/    # All sprite images used in the game
+└── dist/               # Production version — stable, fully commented and documented code (this is what gets graded)
+    ├── main.py         # Stable version of the main game file
+    ├── upside_down_bg.py  # Stable version of the background module
+    └── assets/
+        ├── sounds/     # Verified copies of all sounds
+        └── sprites/    # Verified copies of all sprites
+```
+
+## OOP Breakdown
+
+The game is structured around several classes defined in `main.py` and `upside_down_bg.py`:
+
+| Class | Description |
+|---|---|
+| `Player` | Represents the player character. Handles movement (WASD), gun rotation toward the mouse, shooting, health, and power-up application. |
+| `Enemy` | Represents a standard Demogorgon enemy. Handles pathfinding toward the player, health, damage, and health bar rendering. |
+| `Boss` | Extends enemy behavior for the final wave. Includes a laser attack mechanic and increased aggression/health scaling. |
+| `Bullet` | Represents a projectile fired by the player. Handles directional movement based on mouse-aim angle math. |
+| `PowerUp` | Represents a dropped power-up (health, damage boost, or speed boost). Handles drop logic and collision with the player. |
+| `UpsideDownBackground` | Manages the procedurally generated background — draws vines, ground, and atmospheric overlays that always fit the screen. |
+
+## Assets & Sources
+
+### Sprites
+- **Gun sprite:** [Pixel Art Guns with Firing Animations](https://gg-undroid-games.itch.io/pixel-art-guns-with-firing-animations-2) (itch.io — gg-undroid-games)
+- **Enemy sprite (Demogorgon):** [Stranger Things Demogorgon Pixel Art](https://dinopixel.com/stranger-things-demogorgon-pixel-art-44185) (dinopixel.com)
+- **Boss sprite (Mind Flayer):** [Mind Flayer](https://www.deviantart.com/gojilion91/art/Mind-Flayer-766307237) (DeviantArt — gojilion91)
+- **Player sprite:** [Stranger Things Pixel Art](https://www.pinterest.com/pin/stranger-things-pixel-art-pattern--6896205672256546/) (Pinterest)
+- **Laser sprite:** [Warped Shooting FX](https://ansimuz.itch.io/warped-shooting-fx) (itch.io — ansimuz)
+
+### Sounds
+All sound effects and music were sourced from YouTube.
 
 ## AI Usage
 
