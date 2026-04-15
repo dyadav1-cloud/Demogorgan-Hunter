@@ -626,7 +626,7 @@ class Game():
 
                         enemy.kill()
                         self.score += 1
-                        
+                        self.enemy_death_sound.play()
 
                         if random.random() < POWERUP_DROP_CHANCE:
                             power_type = random.choice(["health", "health", "damage", "speed"])
@@ -687,6 +687,7 @@ class Game():
             if distance < 60:
                 self.player.health -= 20
                 enemy.kill()
+                self.player_hurt_sound.play()
                 
                 if self.player.health <= 0:
                     self.state = "game_over"
@@ -701,6 +702,7 @@ class Game():
             if distance < 50:
                 self.player.health -= laser.damage
                 laser.kill()
+                self.player_hurt_sound.play()
 
                 if self.player.health <= 0:
                     self.state = "game_over"
@@ -909,6 +911,7 @@ class Game():
 
         laser = BossLaser(laser_x, laser_y, angle)
         self.boss_lasers.add(laser)
+        self.laser_sound.play()
 
     def _draw_powerup_status(self):
         y = 110
