@@ -1,6 +1,12 @@
 import pygame, os, math, random
 from upside_down_bg import UpsideDownBackground
 
+GAME_PATH = os.path.dirname(os.path.abspath(__file__))
+
+def get_asset_path(filename: str) -> str:
+    """Returns the path to an asset file, given its filename."""
+    return os.path.join(GAME_PATH, "assets", filename)
+
 pygame.init()
 pygame.mixer.init()
 
@@ -63,7 +69,7 @@ SPEED_BOOST_DURATION = 5.0
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.original_image = pygame.image.load("player_transparant.png").convert_alpha()
+        self.original_image = pygame.image.load(get_asset_path("player_transparant.png")).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
         
@@ -135,7 +141,7 @@ class Bullet(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, health):
         super().__init__()
-        self.image = pygame.image.load("enemy.png").convert_alpha()
+        self.image = pygame.image.load(get_asset_path("enemy.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
         self.rect = self.image.get_rect()
@@ -185,7 +191,7 @@ class BossLaser(pygame.sprite.Sprite):
         super().__init__()
 
         # Replace this with your laser sprite later if needed
-        self.image = pygame.image.load("preview.gif").convert_alpha()
+        self.image = pygame.image.load(get_asset_path("preview.gif")).convert_alpha()
         self.image = pygame.transform.scale(self.image, ((40, 40)))
         self.rect = self.image.get_rect()
         self.world_x = world_x
@@ -210,7 +216,7 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
 
-        self.image = pygame.image.load("mind_flayer_final.png").convert_alpha()
+        self.image = pygame.image.load(get_asset_path("mind_flayer_final.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (BOSS_WIDTH, BOSS_HEIGHT))
         self.rect = self.image.get_rect()
 
@@ -269,7 +275,7 @@ class Boss(pygame.sprite.Sprite):
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, world_x, world_y, power_type):
         super().__init__()
-        self.image = pygame.image.load("star_no_bg.png").convert_alpha()
+        self.image = pygame.image.load(get_asset_path("star_no_bg.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (POWERUP_WIDTH, POWERUP_HEIGHT))
         self.rect = self.image.get_rect()
 
@@ -309,18 +315,15 @@ class Game():
         self.last_state = self.state
 
         # Sound effects
-        self.shoot_sound = pygame.mixer.Sound("sounds/gunshot.mp3")
-        self.footstep_sound = pygame.mixer.Sound("sounds/footsteps.mp3")
-        self.laser_sound = pygame.mixer.Sound("sounds/laser_sound.mp3")
-        self.enemy_death_sound = pygame.mixer.Sound("sounds/enemy_death.mp3")
-        self.player_hurt_sound = pygame.mixer.Sound("sounds/player_hurt.mp3")
-        self.game_over_sound = pygame.mixer.Sound("sounds/game_over.mp3")
-        self.menu_click_sound = pygame.mixer.Sound("sounds/menu_click.mp3")
-
-        # Optional victory sound if you have one
-        # If your victory file has a different name, change it here
-        self.victory_sound = pygame.mixer.Sound("sounds/victory.mp3")
-        self.lightning_sound = pygame.mixer.Sound("sounds/lightning.mp3")
+        self.shoot_sound = pygame.mixer.Sound(get_asset_path("gunshot.mp3"))
+        self.footstep_sound = pygame.mixer.Sound(get_asset_path("footsteps.mp3"))
+        self.laser_sound = pygame.mixer.Sound(get_asset_path("laser_sound.mp3"))
+        self.enemy_death_sound = pygame.mixer.Sound(get_asset_path("enemy_death.mp3"))
+        self.player_hurt_sound = pygame.mixer.Sound(get_asset_path("player_hurt.mp3"))
+        self.game_over_sound = pygame.mixer.Sound(get_asset_path("game_over.mp3"))
+        self.menu_click_sound = pygame.mixer.Sound(get_asset_path("menu_click.mp3"))
+        self.victory_sound = pygame.mixer.Sound(get_asset_path("victory.mp3"))
+        self.lightning_sound = pygame.mixer.Sound(get_asset_path("lightning.mp3"))
 
         # Volumes
         self.shoot_sound.set_volume(0.35)
@@ -387,7 +390,7 @@ class Game():
         self.current_bullet_damage = DAMAGE
         self.current_player_speed = PLAYER_SPEED
 
-        self.gun_image = pygame.image.load("gun.png").convert_alpha()
+        self.gun_image = pygame.image.load(get_asset_path("gun.png")).convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
         self._play_music("sounds/final_boss_main_menu.mp3")
