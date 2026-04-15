@@ -300,6 +300,36 @@ class Game():
         self.state = "menu"
         self.previous_state = "menu"
 
+        # Sound effects
+        self.shoot_sound = pygame.mixer.Sound("sounds/gunshot.mp3")
+        self.footstep_sound = pygame.mixer.Sound("sounds/footsteps.mp3")
+        self.laser_sound = pygame.mixer.Sound("sounds/laser sound.mp3")
+        self.enemy_death_sound = pygame.mixer.Sound("sounds/enemy_death.mp3")
+        self.player_hurt_sound = pygame.mixer.Sound("sounds/player_hurt.mp3")
+        self.game_over_sound = pygame.mixer.Sound("sounds/game_over.mp3")
+        self.menu_click_sound = pygame.mixer.Sound("sounds/menu_click.mp3")
+
+        # Optional victory sound if you have one
+        # If your victory file has a different name, change it here
+        self.victory_sound = pygame.mixer.Sound("sounds/victory.mp3")
+
+        # Volumes
+        self.shoot_sound.set_volume(0.35)
+        self.footstep_sound.set_volume(0.2)
+        self.laser_sound.set_volume(0.35)
+        self.enemy_death_sound.set_volume(0.35)
+        self.player_hurt_sound.set_volume(0.4)
+        self.game_over_sound.set_volume(0.4)
+        self.menu_click_sound.set_volume(0.35)
+        self.victory_sound.set_volume(0.45)
+
+        # Footstep timing
+        self.footstep_timer = 0
+        self.footstep_delay = 0.35
+
+        # Music state tracking
+        self.current_music = None
+
         self.play_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 400, 200, 60)
         self.settings_button = pygame.Rect(WINDOW_WIDTH // 2 - 100, 500, 200, 60)
         self.back_button = pygame.Rect(50, 50, 150, 50)
@@ -350,6 +380,8 @@ class Game():
         self.gun_image = pygame.image.load("gun.png").convert_alpha()
         self.gun_image = pygame.transform.scale(self.gun_image, ((120, 40)))
 
+        self._play_music("sounds/final_boss_main_menu.mp3")
+
     def _update_overlay_effects(self, delta):
         self.lightning_timer -= delta
 
@@ -395,6 +427,13 @@ class Game():
             flash = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
             flash.fill((235, 235, 255, 75))
             self.screen.blit(flash, (0, 0))
+
+    def _play_music(self, music_file):
+        if self.current_music != music_file:
+            pygame.mixer.music.load(music_file)
+            pygame.mixer.music.set_volume(0.35)
+            pygame.mixer.music.play(-1)
+            self.current_music = music_file
 
     def _setup_wave(self):
         self.enemies_spawned = 0
@@ -465,53 +504,67 @@ class Game():
 
                 if self.state == "menu":
                     if self.play_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._reset_game()
                         self.state = "playing"
 
                     elif self.settings_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.previous_state = "menu"
                         self.state = "settings"
 
                 elif self.state == "settings":
                     if self.back_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = self.previous_state
 
                     elif self.res_1920_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._change_resolution(1920, 1080)
 
                     elif self.res_1280_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._change_resolution(1280, 720)
 
                     elif self.res_800_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._change_resolution(800, 600)
 
                 elif self.state == "playing":
                     if self.pause_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = "paused"
                     else:
                         self._shoot()
 
                 elif self.state == "paused":
                     if self.continue_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = "playing"
                     elif self.pause_settings_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.previous_state = "paused"
                         self.state = "settings"
                     elif self.quit_menu_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = "menu"
 
                 elif self.state == "game_over":
                     if self.play_again_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._reset_game()
                         self.state = "playing"
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = "menu"
 
                 elif self.state == "victory":
                     if self.play_again_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self._reset_game()
                         self.state = "playing"
                     elif self.game_over_menu_button.collidepoint(mouse_pos):
+                        self.menu_click_sound.play()
                         self.state = "menu"
 
     def _change_resolution(self, width, height):
@@ -540,9 +593,16 @@ class Game():
 
     def _update(self, delta):
         
+
         if self.state != "playing":
             return
         self._update_overlay_effects(delta)
+
+        if self.state == "playing":
+            if self.wave == 4:
+                self._play_music("sounds/final_boss_main_menu.mp3")
+            else:
+                self._play_music("sounds/ingame_background.mp3")
 
         self.player.update(delta)
         self.bullets.update(delta)
