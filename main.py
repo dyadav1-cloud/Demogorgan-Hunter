@@ -187,7 +187,7 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
 
-        self.image = pygame.image.load("boss.png").convert_alpha()
+        self.image = pygame.image.load("mind_flayer_final.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (BOSS_WIDTH, BOSS_HEIGHT))
         self.rect = self.image.get_rect()
 
