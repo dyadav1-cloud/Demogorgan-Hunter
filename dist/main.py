@@ -915,7 +915,7 @@ class Game():
         Args:
             music_file (str): Absolute path to the music file to play.
         """
-        if self.current_music != music_file:
+        if self.current_music != music_file or not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(music_file)
             pygame.mixer.music.set_volume(0.35)
             pygame.mixer.music.play(-1)   # -1 = loop indefinitely
@@ -1355,12 +1355,13 @@ class Game():
         if self.state != self.last_state:
             if self.state == "game_over":
                 pygame.mixer.music.stop()
+                self.current_music = None
                 self.game_over_sound.play()
 
             elif self.state == "victory":
                 pygame.mixer.music.stop()
-                self.enemy_death_sound.play()
-                pygame.time.delay(150)   # Brief pause before the fanfare
+                self.current_music = None
+                pygame.mixer.stop()  # Clear all active sound channels so the fanfare gets one
                 self.victory_sound.play()
 
             elif self.state == "menu":
